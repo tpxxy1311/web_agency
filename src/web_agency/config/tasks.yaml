@@ -1,0 +1,181 @@
+requirement_analysis_task:
+  description: >
+    Analyze the user's input and extract structured functional and design requirements for the web page.
+    Ensure that the extracted information is well-structured, clear, and useful for UX designers and developers.
+    Identify any accessibility considerations to ensure usability for all users.
+    User input:
+    {user_description}   
+  expected_output: >
+    A structured document containing:
+    - Functional requirements (e.g., core functionalities, user actions)
+    - Non-functional and design requirements (e.g., layout preferences)
+    - Accessibility considerations (e.g., contrast, keyboard navigation)
+  agent: requirement_analyst
+
+define_components_task:
+  description: >
+    Using the extracted requirements and the user input, list and categorize all UI elements needed for the web page.
+    Clearly define user interactions, including click actions, hover effects, transitions, and animations.
+    Ensure all elements align with the functional and design requirements.
+    User input:
+    {user_description}   
+  expected_output: >
+    A structured document containing:
+     - Categorized UI elements (e.g., input fields, buttons, menus, navigation bars)
+     - Defined user interactions (e.g., button clicks, hover effects, scrolling behavior, error handling)
+  agent: requirement_analyst
+  context: [requirement_analysis_task]
+
+generate_wireframe_description_task:
+  description: >
+    Create a detailed textual description of the wireframe based on the structured UI requirements.
+    Define all UI components, their roles, and their placement within the overall layout of the page.
+    The description must be structured so detailed and good that it can be converted into HTML and CSS in the next step.
+    Specify layout techniques (e.g., Columns, Rows, Grids) and ensure clear spacing and alignment details.
+    If user preferences for layout exist, integrate them accordingly.
+    User input:
+    {user_description}
+  expected_output: >
+    A detailed textual wireframe description containing:
+      - Layout structure (e.g., Grid, Columns, Rows etc.)
+      - All UI components with their roles (e.g., input fields, buttons, navigation bars)
+      - Positioning of the components and alignment specifications
+      - Spacing, padding, and margins of the elements to each other
+      - Interaction zones (e.g., hover states, clickable elements)
+      - No specific styles beside the layout! (No Colors, Fonts etc.)
+  agent: wireframe_designer
+  context: [define_components_task]
+
+parse_wireframe_components_task:
+  description: >
+    Analyze the textual wireframe description of the UI layout and extract a structured list of UI components.
+    For each UI component, identify its type (e.g., header, input field, button, image) and determine its placement within a 1024x720 pixel canvas.
+    Define the bounding box for each component using four properties:
+    - x: horizontal position (0 to 1024)
+    - y: vertical position (0 to 720)
+    - width: width of the component (max 1024)
+    - height: height of the component (max 720)
+    Ensure logical placement, spacing, and sizing between elements.
+    The output should be minimalistic, suitable for wireframe generation without unnecessary style information.
+    Focus on usability and clear layout logic.
+  expected_output: >
+    A JSON string representing a dictionary with the following structure:
+      - "components": A JSON array containing a list of UI components, each defined by:
+        - "type": the type of the component (header, input, button, image, etc.)
+        - "x": top-left x-coordinate (integer, 0-1024)
+        - "y": top-left y-coordinate (integer, 0-720)
+        - "width": width of the component (integer, max 1024)
+        - "height": height of the component (integer, max 720)
+      - "size": A dictionary containing:
+        - "width": the overall width of the canvas (integer, 1024)
+        - "height": the overall height of the canvas (integer, 720)
+    Example:
+    {
+      "components": [
+        {"type": "header", "x": 50, "y": 20, "width": 400, "height": 80},
+        {"type": "input", "x": 100, "y": 150, "width": 300, "height": 40},
+        {"type": "button", "x": 200, "y": 250, "width": 100, "height": 40},
+        {"type"}: "image", "x": 100, "y": 100, "width": 300, "height": 500}
+      ],
+      "size": {"width": 1024, "height": 720}
+    }
+    The output must include clear, logical positioning and avoid any specific styles, colors, or fonts.
+  agent: wireframe_parser
+  context: [generate_wireframe_description_task]
+
+render_wireframe_task:
+  description: >
+    Using the structured list of UI components with their bounding boxes, render a visual wireframe image.
+    Each component should appear as a black outlined rectangle on a white background.
+    Optionally, label each component with its type (e.g., "header", "button").
+    Image size: 1024x720 pixels.
+  expected_output: >
+    A saved image file (PNG) showing all UI components as outlined boxes.
+    Elements are placed according to their x, y, width, and height properties.
+    No color, no additional styling.
+  agent: wireframe_visualizer
+  context: [parse_wireframe_components_task]
+
+wireframe_generation_task:
+  description: >
+    Convert the structured list of UI components with their bounding boxes into a non-functional low-fidelity HTML wireframe. 
+    Use semantic HTML elements to represent UI components and apply CSS-based positioning (e.g., Flexbox, Grid) 
+    to ensure proper layout structure. Focus on spacing, alignment, and hierarchy to create a well-organized wireframe 
+    that serves as a foundation for further design iterations. 
+    The wireframe should be clean (no further styling or colors), easy to refine and ready to handoff to the Frontend Developers.
+  expected_output: >
+    - A structured HTML file (wireframe.html) representing the wireframe layout saved in the wireframe folder.
+    - A CSS Style Tag inside the wireframe.html defining the basic layout, spacing, and alignment.
+    - Semantic HTML structure ensuring clarity, accessibility, and usability.
+    - A brief explanation of the applied layout choices and structure.
+  agent: wireframe_designer
+  context: [parse_wireframe_components_task]
+
+wireframe_file_write_task:
+  description: >
+    Write the HTML wireframe to a file
+  expected_output: >
+    A html wireframe with all elements identified in the from previous task in a file named wireframes/wireframe.html
+  agent: wireframe_file_writer
+  context: [wireframe_generation_task]
+
+wireframe_validation_task:
+  description: >
+    Validate the generated wireframe against the defined UI components and layout requirements. 
+    Ensure that:
+      - All required elements from `define_components_task` are present.
+      - The Layout structure from `define_components_task` is correct.
+      - There are no overlapping elements.
+      - Layout alignment follows the structured wireframe description.
+      - The wireframe is well-organized, responsive-ready, and accessible.
+    If any issues are found, provide specific feedback to the Wireframe Designer.
+  expected_output: >
+    - A validation report, safed in wireframes/wireframe_validation.md, stating whether the wireframe is correct.
+    - A list of any missing elements or layout inconsistencies.
+    - Clear improvement suggestions (if needed) for the Wireframe Designer, so he can improve the wirefraame.
+  agent: wireframe_validator
+  context: [define_components_task, wireframe_generation_task]
+
+
+# generate_wireframe_description_task:
+#   description: >
+#     Create a detailed textual description of the wireframe based on structured UI requirements.
+#     Define all UI components, their roles, and their placement within an HTML-based layout.
+#     The description must be structured so it can be directly converted into HTML and CSS.
+#     Specify layout techniques (e.g., Flexbox, CSS Grid) and ensure clear spacing and alignment details.
+#     If user preferences for layout exist, integrate them accordingly.
+#     User input:
+#     {user_description}
+#   expected_output: >
+#     A structured wireframe description in JSON format containing:
+#       - List of UI components with their roles (e.g., input fields, buttons, navigation bars)
+#       - Layout structure using HTML and CSS principles (e.g., Grid, Flexbox, container sizes)
+#       - Positioning and alignment specifications (e.g., `justify-content`, `align-items`)
+#       - Spacing, padding, and margins of the elements to each other
+#       - Interaction zones (e.g., hover states, clickable elements)
+#       - No specific styles beside the layout! (No Colors, Fonts etc.)
+#   agent: wireframe_designer
+#   context: [define_components_task]
+
+# generate_wireframe_prompt_task:
+#   description: >
+#     Convert the structured wireframe description into a detailed and optimized Stable Diffusion prompt. 
+#     Ensure the prompt accurately describes the wireframe layout, UI components, spacing, and hierarchy. 
+#     The wording should be precise and formatted to guide Stable Diffusion in generating a 
+#     black-and-white, low-fidelity wireframe with well-defined UI elements.
+#   expected_output: >
+#     - A detailed text prompt optimized for wireframe image generation.
+#     - Clear segmentation of UI elements, layout structure, and spatial relationships in the prompt.
+#     - Adjustments to improve control and accuracy in the AI-generated output.
+#   agent: wireframe_designer
+#   context: [generate_wireframe_description_task]
+
+# generate_wireframe_image_task:
+#   description: >
+#     Create a wireframe image using the prompt generated in the previous taks and the Stable Diffusion Tool.  
+#     The final image should be a minimalistic, black-and-white wireframe with clearly defined UI elements 
+#     that aligns with the provided wireframe description.
+#   expected_output: >
+#     - A link to the wireframe image, generated with stable diffusion
+#   agent: wireframe_designer
+#   context: [generate_wireframe_prompt_task]

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Layout</title>
+    <style>
+        body {
+            display: flex;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            height: 720px;
+            overflow: hidden;
+        }
+        .container {
+            display: flex;
+            width: 1024px;
+            height: 720px;
+        }
+        .image {
+            width: 307px;
+            height: 720px;
+            background-color: lightgrey; /* Placeholder for image */
+        }
+        .content {
+            display: flex;
+            flex-direction: column;
+            width: 717px;
+            height: 720px;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .input {
+            width: 360px;
+            height: 40px;
+            margin-bottom: 10px;
+        }
+        .button {
+            width: 100px;
+            height: 40px;
+            margin-top: 10px;
+        }
+        .divider {
+            width: 360px;
+            height: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="image" role="img" aria-label="Placeholder for image"></div>
+        <div class="content">
+            <input type="text" class="input" placeholder="Input 1" aria-label="Input field for first entry">
+            <input type="text" class="input" placeholder="Input 2" aria-label="Input field for second entry">
+            <button class="button" aria-label="Submit button">Submit</button>
+            <div class="divider" aria-hidden="true"></div>
+        </div>
+    </div>
+</body>
+</html>
