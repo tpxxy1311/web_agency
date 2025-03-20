@@ -3,59 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wireframe Layout</title>
+    <title>Wireframe</title>
     <style>
         body {
-            display: flex;
             margin: 0;
+            display: flex;
+            height: 100vh;
             font-family: Arial, sans-serif;
-            height: 720px;
-            overflow: hidden;
-        }
-        .container {
-            display: flex;
-            width: 1024px;
-            height: 720px;
-        }
-        .image {
-            width: 307px;
-            height: 720px;
-            background-color: lightgrey; /* Placeholder for image */
-        }
-        .content {
-            display: flex;
-            flex-direction: column;
-            width: 717px;
-            height: 720px;
-            padding: 20px;
             box-sizing: border-box;
         }
-        .input {
-            width: 360px;
-            height: 40px;
-            margin-bottom: 10px;
+        .image-container {
+            flex: 1;
+            background-color: #f0f0f0; /* Placeholder for an actual image */
         }
-        .button {
-            width: 100px;
-            height: 40px;
-            margin-top: 10px;
+        .form-container {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
         }
-        .divider {
-            width: 360px;
-            height: 20px;
-            margin-top: 20px;
+        label {
+            font-weight: bold;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        .validation-message {
+            font-size: 12px;
+            color: red;
+        }
+        button {
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        a {
+            color: blue;
+            text-decoration: underline;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="image" role="img" aria-label="Placeholder for image"></div>
-        <div class="content">
-            <input type="text" class="input" placeholder="Input 1" aria-label="Input field for first entry">
-            <input type="text" class="input" placeholder="Input 2" aria-label="Input field for second entry">
-            <button class="button" aria-label="Submit button">Submit</button>
-            <div class="divider" aria-hidden="true"></div>
-        </div>
+    <div class="image-container" aria-label="Image Section"></div>
+    <div class="form-container" aria-labelledby="form-title">
+        <h1 id="form-title" style="display: none;">Login Form</h1>
+        
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="Enter your email">
+        <div class="validation-message" id="email-validation-message">Invalid email address</div>
+
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password">
+        <div class="validation-message" id="password-validation-message">Password is required</div>
+
+        <button type="submit">Login</button>
+        <a href="#">Forgot Password?</a>
     </div>
 </body>
 </html>

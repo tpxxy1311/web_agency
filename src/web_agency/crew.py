@@ -38,7 +38,7 @@ class WebAgency():
 			verbose=True,
 			memory=True,
 		)
-
+	
 	@agent
 	def wireframe_visualizer(self) -> Agent:
 		return Agent(

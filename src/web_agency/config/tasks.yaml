@@ -2,27 +2,32 @@ requirement_analysis_task:
   description: >
     Analyze the user's input and extract structured functional and design requirements for the web page.
     Ensure that the extracted information is well-structured, clear, and useful for UX designers and developers.
-    Identify any accessibility considerations to ensure usability for all users.
-    User input:
-    {user_description}   
+    Pay special attention to accessibility considerations to ensure usability for all users and platform-specific needs.
+    Provided user inputs:
+    - Feature description: {feature_description}
+    - Functional requirements: {functional_requirements}
+    - Visual/design preferences: {layout_requirements}
+    - Edge cases: {edge_cases}
   expected_output: >
     A structured document containing:
-    - Functional requirements (e.g., core functionalities, user actions)
-    - Non-functional and design requirements (e.g., layout preferences)
-    - Accessibility considerations (e.g., contrast, keyboard navigation)
+    - Functional requirements (core functionalities, user actions)
+    - Non-functional and design requirements (layout, visual preferences)
+    - Accessibility considerations (contrast, keyboard navigation, responsiveness)
   agent: requirement_analyst
 
 define_components_task:
   description: >
-    Using the extracted requirements and the user input, list and categorize all UI elements needed for the web page.
-    Clearly define user interactions, including click actions, hover effects, transitions, and animations.
-    Ensure all elements align with the functional and design requirements.
-    User input:
-    {user_description}   
+    Based on the extracted requirements and the user's detailed inputs, list and categorize all UI elements required for the web page.
+    Clearly define user interactions such as clicks, hover effects, transitions, and error handling.
+    Provided user inputs:
+    - Feature description: {feature_description}
+    - Functional requirements: {functional_requirements}
+    - Visual/design preferences: {layout_requirements}
+    - Edge cases: {edge_cases}
   expected_output: >
     A structured document containing:
-     - Categorized UI elements (e.g., input fields, buttons, menus, navigation bars)
-     - Defined user interactions (e.g., button clicks, hover effects, scrolling behavior, error handling)
+    - Categorized UI elements (e.g., input fields, buttons, navigation bars, images)
+    - Defined user interactions (e.g., button clicks, hover effects, error handling behavior)
   agent: requirement_analyst
   context: [requirement_analysis_task]
 
@@ -33,16 +38,16 @@ generate_wireframe_description_task:
     The description must be structured so detailed and good that it can be converted into HTML and CSS in the next step.
     Specify layout techniques (e.g., Columns, Rows, Grids) and ensure clear spacing and alignment details.
     If user preferences for layout exist, integrate them accordingly.
-    User input:
-    {user_description}
+    Provided visual preferences:
+    {layout_requirements}
   expected_output: >
-    A detailed textual wireframe description containing:
-      - Layout structure (e.g., Grid, Columns, Rows etc.)
-      - All UI components with their roles (e.g., input fields, buttons, navigation bars)
-      - Positioning of the components and alignment specifications
-      - Spacing, padding, and margins of the elements to each other
-      - Interaction zones (e.g., hover states, clickable elements)
-      - No specific styles beside the layout! (No Colors, Fonts etc.)
+    A detailed textual wireframe description including:
+    - Layout structure (Grid, Columns, Rows, etc.)
+    - All UI components with their roles (inputs, buttons, navigation, images)
+    - Positioning and alignment details
+    - Spacing, margins, paddings
+    - Clear interaction zones (hover, clickable elements)
+    - No specific colors, fonts, or styles beyond layout details
   agent: wireframe_designer
   context: [define_components_task]
 
@@ -121,7 +126,8 @@ wireframe_file_write_task:
 
 wireframe_validation_task:
   description: >
-    Validate the generated wireframe against the defined UI components and layout requirements. 
+    Validate the generated wireframe against the defined UI components and layout requirements, you can
+    alo take a look at the user inputs again, if needed. 
     Ensure that:
       - All required elements from `define_components_task` are present.
       - The Layout structure from `define_components_task` is correct.
@@ -129,6 +135,9 @@ wireframe_validation_task:
       - Layout alignment follows the structured wireframe description.
       - The wireframe is well-organized, responsive-ready, and accessible.
     If any issues are found, provide specific feedback to the Wireframe Designer.
+    Provided user inputs:
+    - Functional requirements: {functional_requirements}
+    - Visual/design preferences: {layout_requirements}
   expected_output: >
     - A validation report, safed in wireframes/wireframe_validation.md, stating whether the wireframe is correct.
     - A list of any missing elements or layout inconsistencies.

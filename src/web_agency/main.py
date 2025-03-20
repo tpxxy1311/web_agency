@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import sys
 import warnings
-from datetime import datetime
 from crew import WebAgency
 import os
 import agentops
@@ -17,15 +16,26 @@ def run():
     """
     Run the crew.
     """
-    session = agentops.init(api_key=os.getenv("AGENTOPS_API_KEY"))
+    print("🚀 Crew startet...")  # Debugging-Print
+    session = agentops.init(api_key=os.getenv("AGENTOPS_API_KEY")) # Start AgentOps Session
     
+
+    def get_input(prompt, default):
+        user_input = input(f"{prompt} (Default: {default}): ")
+        return user_input.strip() if user_input.strip() != "" else default
+
     inputs = {
-        'user_description' : "A login screen with two input fields mail an password and sumbit button, there should be an error when the login failed or the user sends the form and one input field is missing. There should also be a visual image element on the left"
+        'feature_description': get_input("📝 Describe the feature you'd like to build", "Login screen with email & password input"),
+        'functional_requirements': get_input("⚙️  What are the key functional requirements?", "User authentication, error handling for missing fields"),
+        'layout_requirements': get_input("🎨 Any layout or design preferences?", "Image on the left, Form on the right, clean and modern UI"),
+        'edge_cases': get_input("🚧 Any specific edge cases or error scenarios to handle?", "Error message on login failure or empty fields"),
     }
 
     result = WebAgency().crew().kickoff(inputs=inputs)
     print(result)
-    session.end_session("AgentOps ended")
+
+    session.end_session("✅ AgentOps ended") # End AgentOps Session
+    print("✅ Crew finished!") # Debugging-Print
 
 if __name__ == "__main__":
     run()
