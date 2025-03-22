@@ -1,8 +1,7 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
-from tools.controlnet_tool import generate_wireframe
 from tools.wireframe_tool import render_wireframe
-from crewai_tools import FileWriterTool
+from crewai_tools import FileWriterTool, CodeDocsSearchTool, DirectoryReadTool, FileReadTool
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -44,7 +43,6 @@ class WebAgency():
 		return Agent(
 			config=self.agents_config['wireframe_visualizer'],
 			verbose=True,
-			memory=True,
 		)
 	
 	@agent
@@ -70,6 +68,24 @@ class WebAgency():
 			config=self.agents_config['wireframe_validator'],
 			verbose=True,
 			tools=[FileWriterTool()],
+		)
+	
+	@agent
+	def frontend_software_engineer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_software_engineer'],
+			verbose=True,
+			tools=[DirectoryReadTool(directory_path='../../fara.ai-frontend/src')],
+			memory=True
+		)
+
+	@agent
+	def nextjs_frontend_developer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['nextjs_frontend_developer'],
+			verbose=True,
+			memory=True,
+			tools=[CodeDocsSearchTool()]
 		)
 
 	# To learn more about structured task outputs, 
@@ -124,6 +140,20 @@ class WebAgency():
 		return Task(
 			config=self.tasks_config['wireframe_validation_task'],
 		)
+
+	@task
+	def plan_component_structure_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['plan_component_structure_task'],
+		)
+	
+	@task
+	def implement_nextjs_components_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['implement_nextjs_components_task'],
+		)
+
+	
 
 	@crew
 	def crew(self) -> Crew:

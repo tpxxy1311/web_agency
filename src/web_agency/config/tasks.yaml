@@ -145,6 +145,74 @@ wireframe_validation_task:
   agent: wireframe_validator
   context: [define_components_task, wireframe_generation_task]
 
+plan_component_structure_task:
+  description: >
+    Review the wireframe and inspect the project folder structure 
+    of the existing Next.js project located at '../../fara.ai-frontend/src'. 
+    !IMPORTANT Ignore the 'node_modules' -folder !IMPORTANT
+    Plan how to split the page into reusable, maintainable React components
+    and identifie what parts don't have to be a seperate component and can be implemented directly on the page.
+    For each identified component:
+      - Define the component name and its responsibility.
+      - Decide whether the component should be reusable or page-specific.
+      - Determine the appropriate subdirectory within the Next.js project where the component file should be created (e.g., components/, pages/, layouts/).
+    Ensure alignment with best practices for Next.js and React.
+    Consider component hierarchy, reusability, and scalability.
+    Provide the output in for the frontend developer.
+  expected_output: >
+    - A list of identified React components, including:
+      - Component name
+      - Description of its purpose
+      - Suggested directory/subfolder path in the Next.js project (relative path)
+    - Explanation of component hierarchy and reusability considerations.
+    - Notes on any project conventions (file naming, folder structure) to follow.
+    - Saved as 'component_structure_plan.md'.
+  agent: frontend_software_engineer
+  context: [wireframe_generation_task]
+
+implement_nextjs_components_task:
+  description: >
+    Based on the planned component structure, implement the React components.
+    Focus purely on writing clean, reusable, semantic, and accessible React components.
+    Do not save the code yet—prepare all components as code snippets.
+    Assemble the components into a main Next.js page as per the plan.
+    Leave visual styling for future steps.
+  expected_output: >
+    - A structured collection of:
+      - React component code snippets (with filenames suggested)
+      - A Next.js page file code snippet assembling the components
+    - A summary listing:
+      - Component names
+      - Suggested file paths (based on the plan)
+      - Short description of each components purpose
+  agent: nextjs_frontend_developer
+  context: [plan_component_structure_task]
+
+
+# implement_nextjs_components_task:
+#   description: >
+#     Using the component structure plan provided in 'component_structure_plan.md',
+#     implement the Next.js page and all its React components inside the existing Next.js project folder at '../../fara.ai-frontend/src'.
+#     For each component:
+#       - Create the component file in the designated subdirectory.
+#       - Ensure semantic correctness, accessibility, and modularity.
+#     Assemble all components into the generated Next.js page in the app directory.
+#     Do NOT apply visual styling yet; focus on component logic, structure, and layout only.
+#     After implementation, create a brief 'README.md' summarizing:
+#       - Created files and folder locations.
+#       - How to use or extend the components.
+#   expected_output: >
+#     - New Next.js subdirectory in the app folder with the new page and the imported components.
+#     - New React component files created in the appropriate subdirectories as defined in 'component_structure_plan.md'.
+#     - Updated Next.js page assembling all components.
+#     - 'README.md' summarizing created files, folder locations, and extension instructions.
+#   agent: nextjs_frontend_developer
+#   context: [plan_component_structure_task]
+
+
+
+
+
 
 # generate_wireframe_description_task:
 #   description: >
