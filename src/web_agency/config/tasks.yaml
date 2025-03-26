@@ -149,11 +149,11 @@ plan_component_structure_task:
   description: >
     Review the wireframe and inspect the project folder structure 
     of the existing Next.js project located at '../../fara.ai-frontend/src'. 
-    !IMPORTANT Ignore the 'node_modules' -folder !IMPORTANT
     Plan how to split the page into reusable, maintainable React components
     and identifie what parts don't have to be a seperate component and can be implemented directly on the page.
     For each identified component:
       - Define the component name and its responsibility.
+      - Define which States are needed and which functionality the components hsould have.
       - Decide whether the component should be reusable or page-specific.
       - Determine the appropriate subdirectory within the Next.js project where the component file should be created (e.g., components/, pages/, layouts/).
     Ensure alignment with best practices for Next.js and React.
@@ -173,7 +173,7 @@ plan_component_structure_task:
 implement_nextjs_components_task:
   description: >
     Based on the planned component structure, implement the React components.
-    Focus purely on writing clean, reusable, semantic, and accessible React components.
+    Focus purely on writing clean, reusable, semantic, and fully functioning React components.
     Do not save the code yet—prepare all components as code snippets.
     Assemble the components into a main Next.js page as per the plan.
     Leave visual styling for future steps.
@@ -187,6 +187,68 @@ implement_nextjs_components_task:
       - Short description of each components purpose
   agent: nextjs_frontend_developer
   context: [plan_component_structure_task]
+
+validate_nextjs_code_task:
+  description: >
+    Conduct a detailed review of the React components and Next.js page structures.
+    You MUST check for:
+      - Alignment with the planned component structure and folder conventions.
+      - Component modularity, reusability, and separation of concerns.
+      - Semantic correctness and accessibility compliance (ARIA roles, alt texts, proper HTML tags).
+      - Consistency in naming conventions, imports, and file organization.
+      - Correct Calls to the API-Endpoints (if inlcuded and necessary)
+      - Correct use of state management and props (check for unnecessary state duplication).
+      - Presence of error handling mechanisms.
+    Provide a well-structured validation report with detailed findings and suggestions categorized by severity (High, Medium, Low).
+  expected_output: >
+    A comprehensive validation report including:
+      - Summary of any structural inconsistencies or deviations from planned architecture.
+      - Accessibility and semantic issues found.
+      - Any potential performance, error handling, or state management concerns.
+      - Suggested improvements with clear recommendations and priority levels.
+      - Confirmation if the code is APPROVED or NEEDS CHANGES from the before integration.
+      - Direct actionable feedback for the nextjs_frontend_developer.
+  agent: frontend_code_reviewer
+  context: [implement_nextjs_components_task]
+
+plan_api_integration_task:
+  description: >
+    If API calls are required (based on the user input: {api_call}),
+    define how and where the API-Call and fetching should be integrated into the Next.js project.
+    For each component requiring API calls:
+      - Map the required API endpoints.
+      - Choose the best data-fetching strategy (client-side, server-side, static, etc.).
+      - Ensure correct request methods and response handling.
+      - Define an appropriate error-handling mechanism.
+    Skip this task if the user input {api_call} is "No" and no components require API calls.
+  expected_output: >
+    - A strucutred file plan for a later implementation by the nextjs_frontend_developer listing:
+      - Components that need API calls.
+      - Endpoints used.
+      - Fetching strategies.
+      - Response and error handling approach.
+  agent: software_engineer
+  context: [plan_component_structure_task]
+
+implement_api_calls_task:
+  description: >
+    Implement API calls only for components that require them 
+    (as determined in plan_api_integration_taks). 
+    - Use the correct Next.js data-fetching methods.
+    - Implement API request handling, loading states, and errors.
+    - Ensure API responses are correctly mapped to UI components.
+    - Follow best practices for security and performance.
+    If no API calls are needed, skip this task.
+  expected_output: >
+    - Updated React components with API calls.
+    - Summary of:
+      - Implemented API calls.
+      - Endpoints used.
+      - State and error handling mechanisms.
+  agent: nextjs_frontend_developer
+  context: [plan_api_integration_task]
+
+
 
 
 # implement_nextjs_components_task:
@@ -208,9 +270,6 @@ implement_nextjs_components_task:
 #     - 'README.md' summarizing created files, folder locations, and extension instructions.
 #   agent: nextjs_frontend_developer
 #   context: [plan_component_structure_task]
-
-
-
 
 
 

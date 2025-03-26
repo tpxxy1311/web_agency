@@ -29,6 +29,7 @@ def run():
         'functional_requirements': get_input("⚙️  What are the key functional requirements?", "User authentication, error handling for missing fields"),
         'layout_requirements': get_input("🎨 Any layout or design preferences?", "Image on the left, Form on the right, clean and modern UI"),
         'edge_cases': get_input("🚧 Any specific edge cases or error scenarios to handle?", "Error message on login failure or empty fields"),
+        'api_call': get_input("📞 Is there an API Endpoint that need to be called for this page?", "No")
     }
 
     result = WebAgency().crew().kickoff(inputs=inputs)

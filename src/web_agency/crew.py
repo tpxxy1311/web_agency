@@ -28,6 +28,7 @@ class WebAgency():
 			config=self.agents_config['requirement_analyst'],
 			verbose=True,
 			memory=True,
+			llm='gpt-4o'
 		)
 	
 	@agent
@@ -52,6 +53,7 @@ class WebAgency():
 			verbose=True,
 			memory=True,
 			max_retry_limit=3,
+			llm='gpt-4o'
 		)
 
 	@agent
@@ -68,6 +70,7 @@ class WebAgency():
 			config=self.agents_config['wireframe_validator'],
 			verbose=True,
 			tools=[FileWriterTool()],
+			llm='gemini/gemini-1.5-flash'
 		)
 	
 	@agent
@@ -76,7 +79,8 @@ class WebAgency():
 			config=self.agents_config['frontend_software_engineer'],
 			verbose=True,
 			tools=[DirectoryReadTool(directory_path='../../fara.ai-frontend/src')],
-			memory=True
+			memory=True,
+			llm='gpt-4o'
 		)
 
 	@agent
@@ -85,7 +89,17 @@ class WebAgency():
 			config=self.agents_config['nextjs_frontend_developer'],
 			verbose=True,
 			memory=True,
-			tools=[CodeDocsSearchTool()]
+			tools=[CodeDocsSearchTool()],
+		)
+	
+	@agent
+	def frontend_code_reviewer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_code_reviewer'],
+			verbose=True,
+			memory=True,
+			tools=[CodeDocsSearchTool()],
+			llm='gemini/gemini-1.5-pro'
 		)
 
 	# To learn more about structured task outputs, 
@@ -146,15 +160,32 @@ class WebAgency():
 		return Task(
 			config=self.tasks_config['plan_component_structure_task'],
 		)
+
+	@task
+	def plan_api_integration_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['plan_api_integration_task'],
+		)
 	
 	@task
 	def implement_nextjs_components_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['implement_nextjs_components_task'],
 		)
+	
+	@task
+	def implement_api_calls_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['implement_api_calls_task'],
+		)
+	
+	@task
+	def validate_nextjs_code_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['validate_nextjs_code_task'],
+		)
 
 	
-
 	@crew
 	def crew(self) -> Crew:
 		"""Creates the WebAgency crew"""

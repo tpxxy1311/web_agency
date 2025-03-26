@@ -1,0 +1,46 @@
+{
+    "endpoints": {
+      "/login": {
+        "method": "POST",
+        "description": "Authenticates a user and returns either a success message with a token or a failure message.",
+        "request_body": {
+          "email": "string",
+          "password": "string"
+        },
+        "responses": {
+          "success": {
+            "status_code": 200,
+            "body": {
+              "message": "successful",
+              "token": "string",
+              "expiresIn": 3600
+            },
+            "description": "Login was successful. A token is returned for authentication."
+          },
+          "failure": {
+            "status_code": 401,
+            "body": {
+              "message": "failed"
+            },
+            "description": "Login failed due to incorrect credentials."
+          }
+        }
+      },
+      "/user": {
+        "method": "GET",
+        "description": "Fetches user profile information.",
+        "headers": {
+          "Authorization": "Bearer <token>"
+        },
+        "response": {
+          "status_code": 200,
+          "body": {
+            "id": "integer",
+            "name": "string",
+            "email": "string"
+          }
+        }
+      }
+    }
+  }
+  
