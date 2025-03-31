@@ -1,0 +1,13 @@
+.logoContainer{
+    display: flex;
+    width: 90%;
+    justify-content: flex-start;
+    align-items: baseline;
+    .logoIcon{
+        margin-right: 10px;
+    }
+    .logoText{
+        font-weight: 500;
+        font-size: 1.8rem;
+    }
+}

@@ -1,0 +1,76 @@
+.accountContainer{
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s ease;
+    border-radius: 10px;
+    position: relative;
+    cursor: pointer;
+    .accountImage{
+        border-radius: 100px;
+        border: 1.2px solid var(--secondary-green);
+        padding: 2px;
+        transition: border 0.3s ease;
+    }
+    .accountInfo{
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        .userName{
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        .companyName{
+            font-weight: 400;
+            font-size: 0.55rem;
+        }
+    }
+}
+
+.active::after{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -2.5%;
+    right: 0;
+    top: -2.2px;
+    width: 105%;
+    height: 115%;
+    background-color: var(--container-contrast); /* Farbe der Hinterlegung */
+    border-radius: 50px; /* Gleiche Ecken wie der Container */
+    z-index: -1; /* Hinter den Inhalt schieben */
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+
+.accountContainer::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -2.5%;
+    right: 0;
+    top: -2.2px;
+    width: 105%;
+    height: 115%;
+    background-color: transparent; /* Farbe der Hinterlegung */
+    border-radius: 50px; /* Gleiche Ecken wie der Container */
+    z-index: -1; /* Hinter den Inhalt schieben */
+    opacity: 1;
+    transition: all 0.3s ease;
+}
+
+.accountContainer:hover{
+    .accountImage{
+        border-radius: 100px;
+        border: 1.2px solid var(--primary-green);
+        padding: 2px;
+        transition: border 0.3s ease;
+    }
+}
+
+.accountContainer:hover::before{
+    background-color: var(--container-contrast);
+    transition: all 0.3s ease;
+}

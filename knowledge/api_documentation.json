@@ -25,21 +25,6 @@
             "description": "Login failed due to incorrect credentials."
           }
         }
-      },
-      "/user": {
-        "method": "GET",
-        "description": "Fetches user profile information.",
-        "headers": {
-          "Authorization": "Bearer <token>"
-        },
-        "response": {
-          "status_code": 200,
-          "body": {
-            "id": "integer",
-            "name": "string",
-            "email": "string"
-          }
-        }
       }
     }
   }

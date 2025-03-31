@@ -1,10 +1,13 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from tools.wireframe_tool import render_wireframe
-from crewai_tools import FileWriterTool, CodeDocsSearchTool, DirectoryReadTool, FileReadTool
+from crewai_tools import FileWriterTool, CodeDocsSearchTool, DirectoryReadTool, FileReadTool, DallETool
+from crewai.knowledge.source.json_knowledge_source import JSONKnowledgeSource
 from dotenv import load_dotenv
 
+#Load Environment Variables such as API Keys
 load_dotenv()
+
 
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
@@ -20,6 +23,8 @@ class WebAgency():
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
+	# Load API knowledge from JSON file
+	# json_source = JSONKnowledgeSource(file_paths=["api_documentation.json"])
 	# If you would like to add tools to your agents, you can learn more about it here:
 	# https://docs.crewai.com/concepts/agents#agent-tools
 	@agent
@@ -57,20 +62,20 @@ class WebAgency():
 		)
 
 	@agent
-	def wireframe_file_writer(self) -> Agent:
-		return Agent(
-			config=self.agents_config['wireframe_file_writer'],
-			verbose=True,
-			tools=[FileWriterTool()],
-		)
-
-	@agent
 	def wireframe_validator(self) -> Agent:
 		return Agent(
 			config=self.agents_config['wireframe_validator'],
 			verbose=True,
 			tools=[FileWriterTool()],
 			llm='gemini/gemini-1.5-flash'
+		)
+
+	@agent
+	def wireframe_file_writer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_file_writer'],
+			verbose=True,
+			tools=[FileWriterTool()],
 		)
 	
 	@agent
@@ -80,7 +85,16 @@ class WebAgency():
 			verbose=True,
 			tools=[DirectoryReadTool(directory_path='../../fara.ai-frontend/src')],
 			memory=True,
-			llm='gpt-4o'
+			llm='gpt-4o',
+		)
+	
+	@agent
+	def image_asset_designer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['image_asset_designer'],
+			verbose=True,
+			tools=[DallETool()],
+			llm='gpt-4o',
 		)
 
 	@agent
@@ -89,6 +103,7 @@ class WebAgency():
 			config=self.agents_config['nextjs_frontend_developer'],
 			verbose=True,
 			memory=True,
+			llm='gpt-4o',
 			tools=[CodeDocsSearchTool()],
 		)
 	
@@ -100,6 +115,23 @@ class WebAgency():
 			memory=True,
 			tools=[CodeDocsSearchTool()],
 			llm='gemini/gemini-1.5-pro'
+		)
+
+	@agent
+	def frontend_ui_designer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_ui_designer'],
+			verbose=True,
+			tools=[FileReadTool(file_path='../../fara.ai-frontend/src/globals.css')],
+			llm='gpt-4o'
+		)
+	
+	@agent
+	def frontend_file_writer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_file_writer'],
+			verbose=True,
+			tools=[FileWriterTool()],
 		)
 
 	# To learn more about structured task outputs, 
@@ -160,11 +192,11 @@ class WebAgency():
 		return Task(
 			config=self.tasks_config['plan_component_structure_task'],
 		)
-
+	
 	@task
-	def plan_api_integration_task(self) -> Task:
+	def generate_page_assets_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['plan_api_integration_task'],
+			config=self.tasks_config['generate_page_assets_task'],
 		)
 	
 	@task
@@ -177,12 +209,31 @@ class WebAgency():
 	def implement_api_calls_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['implement_api_calls_task'],
+			tools=[FileReadTool(file_path='../../knowledge/api_documentation.json')]
 		)
 	
 	@task
 	def validate_nextjs_code_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['validate_nextjs_code_task'],
+		)
+
+	@task
+	def write_nextjs_code_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['write_nextjs_code_task'],
+		)
+	
+	@task
+	def style_components_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['style_components_task'],
+		)
+	
+	@task
+	def style_page_layout_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['style_page_layout_task'],
 		)
 
 	

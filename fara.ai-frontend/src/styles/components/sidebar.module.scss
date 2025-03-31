@@ -1,0 +1,11 @@
+.sidebar{
+    background-color: var(--container);
+    width: 15%;
+    height: 100vh;
+    position: fixed;
+    border-radius: 0px 15px 15px 0px;
+    padding: 2%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}

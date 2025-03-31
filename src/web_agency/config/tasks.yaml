@@ -147,28 +147,63 @@ wireframe_validation_task:
 
 plan_component_structure_task:
   description: >
-    Review the wireframe and inspect the project folder structure 
+    Review the HTML wireframe and inspect the project folder structure 
     of the existing Next.js project located at '../../fara.ai-frontend/src'. 
-    Plan how to split the page into reusable, maintainable React components
-    and identifie what parts don't have to be a seperate component and can be implemented directly on the page.
+    Plan how to split the page into reusable, maintainable seperat React components, which will be later implemented in seperate files
+    and identify which parts don't have to be a seperate component file and can be implemented directly on the page.
+    Use the new Next.js App Router conventions (page.jsx instead of index.jsx).
     For each identified component:
       - Define the component name and its responsibility.
-      - Define which States are needed and which functionality the components hsould have.
+      - Define which States are needed and which functionality the components should have.
       - Decide whether the component should be reusable or page-specific.
-      - Determine the appropriate subdirectory within the Next.js project where the component file should be created (e.g., components/, pages/, layouts/).
+      - Determine the appropriate subdirectory within the Next.js project where the component file should be created (e.g., components/).
+      - Determine the appropriate subdirectory within the Next.js project where the new page folder (name of the new page) and page file (index.js in this folder) should be created (/app/(main) or /app/(auth)).
     Ensure alignment with best practices for Next.js and React.
     Consider component hierarchy, reusability, and scalability.
     Provide the output in for the frontend developer.
   expected_output: >
+    - The identified new page folder and its suggested subfolder path in the Next.js project src/app directory 
+      (e.g. /app/(auth)/login/index.jsx or /app/(main)/explore/index.jsx
     - A list of identified React components, including:
-      - Component name
+      - Component name (e.g LoginForm, NewsCard etc.)
       - Description of its purpose
-      - Suggested directory/subfolder path in the Next.js project (relative path)
+      - Suggested directory/subfolder path in the Next.js project (e.g. /components/LoginForm.jsx)
     - Explanation of component hierarchy and reusability considerations.
-    - Notes on any project conventions (file naming, folder structure) to follow.
-    - Saved as 'component_structure_plan.md'.
   agent: frontend_software_engineer
   context: [wireframe_generation_task]
+
+generate_page_assets_task:
+  description: >
+    Determine if the current page design requires any additional image assets such as hero backgrounds, icons, or illustrations.
+    This task should ONLY execute if the user provided a specific visual prompt or request: {image_asset}
+    If `{image_asset}` is empty, "No", "None", or similar, skip this task and return:
+      - status: SKIPPED
+      - reason: "No image requested or needed."
+    If an image is requested, you must:
+      - Analyze the user input and determine what kind of image should be created.
+      - Refine the image prompt to match the styleguide (colors, tone, aesthetics)
+      - Decide where and how the image will be used in the page layout
+      - Generate a single DALL·E image using the refined prompt
+      - Suggest the filename and asset path (e.g. `public/assets/login-hero.png`)
+      - Describe how the image should be integrated (e.g. background-image in hero section)
+  expected_output: >
+    If no image is required:
+      - status: SKIPPED
+      - reason: explanation
+    If image generation is performed:
+      - status: GENERATED
+      - assets:
+          - name: Short descriptive name
+            original_user_prompt: The original prompt from the user
+            refined_prompt: Final DALL·E prompt used
+            path: <relative file path> (e.g. "public/assets/login-bg.png")
+            use_case: Where and how the image should be used
+            aspect_ratio: landscape | square | icon
+            dalle_generation_metadata:
+              resolution: e.g. 1200x600
+              variation_count: 1
+  agent: image_asset_designer
+
 
 implement_nextjs_components_task:
   description: >
@@ -188,65 +223,245 @@ implement_nextjs_components_task:
   agent: nextjs_frontend_developer
   context: [plan_component_structure_task]
 
-validate_nextjs_code_task:
+implement_nextjs_components_task:
   description: >
-    Conduct a detailed review of the React components and Next.js page structures.
-    You MUST check for:
-      - Alignment with the planned component structure and folder conventions.
-      - Component modularity, reusability, and separation of concerns.
-      - Semantic correctness and accessibility compliance (ARIA roles, alt texts, proper HTML tags).
-      - Consistency in naming conventions, imports, and file organization.
-      - Correct Calls to the API-Endpoints (if inlcuded and necessary)
-      - Correct use of state management and props (check for unnecessary state duplication).
-      - Presence of error handling mechanisms.
-    Provide a well-structured validation report with detailed findings and suggestions categorized by severity (High, Medium, Low).
+    Based on the planned component structure, implement the React components and page layout.
+    Focus purely on writing clean, reusable, semantic, and functional React components.
+    Do not apply any visual styling — keep components unstyled for now (use semantic HTML and structure only).
+    You must:
+      - Implement each seperate component as a code snippet.
+      - Include meaningful and reusable className attributes in all JSX elements to support future styling via SCSS modules or Tailwind.
+      - Assemble the components into a full Next.js page file that uses those components.
+      - Follow exactly the file paths and structure defined in the plan.
+      - Output all code in a machine-readable format so the file writer can save it correctly.
+    Do NOT save the code — only return the full set of snippets with exact filenames and paths.
+    Use the new Next.js App Router structure (e.g., `/app/(main)/dashboard/index.jsx`).
+    
   expected_output: >
-    A comprehensive validation report including:
-      - Summary of any structural inconsistencies or deviations from planned architecture.
-      - Accessibility and semantic issues found.
-      - Any potential performance, error handling, or state management concerns.
-      - Suggested improvements with clear recommendations and priority levels.
-      - Confirmation if the code is APPROVED or NEEDS CHANGES from the before integration.
-      - Direct actionable feedback for the nextjs_frontend_developer.
-  agent: frontend_code_reviewer
-  context: [implement_nextjs_components_task]
-
-plan_api_integration_task:
-  description: >
-    If API calls are required (based on the user input: {api_call}),
-    define how and where the API-Call and fetching should be integrated into the Next.js project.
-    For each component requiring API calls:
-      - Map the required API endpoints.
-      - Choose the best data-fetching strategy (client-side, server-side, static, etc.).
-      - Ensure correct request methods and response handling.
-      - Define an appropriate error-handling mechanism.
-    Skip this task if the user input {api_call} is "No" and no components require API calls.
-  expected_output: >
-    - A strucutred file plan for a later implementation by the nextjs_frontend_developer listing:
-      - Components that need API calls.
-      - Endpoints used.
-      - Fetching strategies.
-      - Response and error handling approach.
-  agent: software_engineer
+    A JSON-like list of all code files to be written later, in this format:
+      - name: component or page name
+        path: <relative path from src> (e.g. "components/LoginForm.jsx", "app/(auth)/login/index.jsx")
+        type: component | page
+        content: |
+          // Full JSX code for the component or page
+        description: A short explanation of the file’s purpose
+    You MUST include:
+      - One `page.jsx` file placed in a proper route folder inside `app/(main)/` or `app/(auth)/`
+      - All JSX must already include relevant `className` attributes for each block, element, or wrapper, even though the actual styles are not applied yet.
+      - Class names should reflect semantic structure (e.g., 'login-form', 'form-input', 'submit-button') and be consistent across files.
+      - All relevant React components placed inside `/components/` or any other designated component subfolder
+    The file paths must be accurate so the `frontend_file_writer` can save them automatically.
+  agent: nextjs_frontend_developer
   context: [plan_component_structure_task]
 
 implement_api_calls_task:
   description: >
-    Implement API calls only for components that require them 
-    (as determined in plan_api_integration_taks). 
-    - Use the correct Next.js data-fetching methods.
-    - Implement API request handling, loading states, and errors.
-    - Ensure API responses are correctly mapped to UI components.
-    - Follow best practices for security and performance.
-    If no API calls are needed, skip this task.
+    If API calls are required (based on the user input: {api_call}),
+    enhance the previously implemented components with the necessary API integrations.
+    Your responsibilities:
+      - Identify which components need API calls.
+      - Implement the API logic directly inside those components, using the correct Next.js data-fetching methods (e.g., `fetch`, `useEffect`, or server components if applicable).
+      - Add proper state handling for loading, errors, and success.
+      - Update the component JSX structure if necessary to reflect loading states or conditional rendering.
+      - Do not apply any visual styling — focus only on logic.
+    You must return the **entire updated component code** for each modified file in a structured format that can later be reviewed and saved.
   expected_output: >
-    - Updated React components with API calls.
-    - Summary of:
-      - Implemented API calls.
-      - Endpoints used.
-      - State and error handling mechanisms.
+    A list of modified files in the following format:
+      - name: component or page name
+        path: <relative path from src> (e.g. "components/LoginForm.jsx", "app/(auth)/login/index.jsx")
+        type: component | page
+        content: |
+          // Updated React component code with API logic
+        description: Description of the component’s purpose and what was changed
+        api_summary:
+          - endpoint: https://api.example.com/user
+            method: GET
+            state_handling: useEffect + useState
+            error_handling: try/catch + fallback UI
+            reason: Fetching user profile on component mount
+    If no API calls are required, return a message indicating the task was skipped.
   agent: nextjs_frontend_developer
-  context: [plan_api_integration_task]
+  context: [implement_nextjs_components_task]
+
+validate_nextjs_code_task:
+  description: >
+    Conduct a thorough review of the implemented React components and Next.js page structures.
+    You are responsible for directly fixing any issues you find, without delegating.
+    You MUST:
+      - Fix problems related to component modularity, reusability, and separation of concerns.
+      - Ensure semantic HTML, proper accessibility (e.g. ARIA roles, alt texts), and HTML best practices.
+      - Correct any inconsistencies in naming conventions, imports, or file paths.
+      - Review and improve API call logic, error boundaries, and state handling.
+      - All Elements have correct classNames for a later styling with SCSS ot tailwind by the UI Designer Agent.
+      - Eliminate duplicated props or unnecessary states.
+      - Ensure the structure matches the original architectural plan and project conventions.
+    After making changes, return:
+      - The improved code as structured files
+      - A detailed changelog per file
+      - A final review status indicating whether the code is fully APPROVED or still needs further changes
+  expected_output: >
+    Return the validated and corrected files in the following format:
+      files:
+        - name: component or page name
+          path: <relative path from src> (e.g. "components/LoginForm.jsx", "app/(auth)/login/index.jsx")
+          type: component | page
+          content: |
+            // Improved JSX code
+          description: Description of the file and its purpose
+          changes_made:
+            - Description of change 1
+            - Description of change 2
+            ...
+  agent: frontend_code_reviewer
+  context: [implement_api_calls_task, implement_nextjs_components_task]
+
+write_nextjs_code_task:
+  description: >
+    Write the validated and approved React components, Next.js pages, and any other provided files to the Next.js project located at '../../fara.ai-frontend/src'.
+    You MUST:
+      - Read the provided list of files, each containing:
+          - path: relative file path from src/
+          - content: the code to write
+      - Ensure the content is saved **exactly** as received.
+      - Match Next.js App Router conventions:
+          - Auth pages go in: app/(auth)/<page-name>/index.jsx
+          - Main pages go in: app/(main)/<page-name>/index.jsx
+          - Components go in: components/<ComponentName>.jsx
+      - Automatically create folders if they do not exist.
+      - Do not overwrite existing files unless explicitly instructed.
+  expected_output: >
+    - A list of all written files with:
+        - file path
+        - status: WRITTEN | SKIPPED
+    - If skipped due to review status, explain the reason.
+    - All files must be saved in '../../fara.ai-frontend/src' using their relative paths.
+  agent: frontend_file_writer
+  context: [validate_nextjs_code_task]
+
+style_components_task:
+  description: >
+    Style the previously implemented React components using the design rules defined in the Styleguide (available in the global CSS File provided).
+    Consider also the users preferences on styling and layout if needed: {layout_requirements}
+    Focus on:
+      - Visual polish (colors, spacing, typography, hover animations)
+      - Consistent use of UI elements across components
+      - Styling can be done using SCSS modules (e.g. ProductCard.module.scss).
+      - Use the `className` values already defined in the JSX structure of the components — style them accordingly in SCSS.
+      - Do not rename classNames or modify the structure unless absolutely necessary — styling should match the structure.
+      - If a component lacks meaningful `className`s, recommend updates in a side note but continue styling what is available.
+    Do not modify logic or state behavior — only the appearance.
+    Ensure that each component imports the correct style and remains modular.
+  expected_output: >
+      Return the SCSS Styles documents for each component with applied styles in the following format:
+      files:
+        - name: styled component name
+          path: <relative path from src> (e.g. "styles/components/LoginForm..module.scss", "styles/components/ProductCard.module.scss")
+          type: component
+          content: |
+            // SCSS stylings
+          description: Description of the style file and its purpose
+          targets e.g.:
+          - class: login-form
+          - class: form-label
+          - class: form-input
+  agent: frontend_ui_designer
+  context: [validate_nextjs_code_task] 
+
+style_page_layout_task:
+  description: >
+    Style the previously implemented Next.js page layout using the design rules defined in the Styleguide (available in the global CSS File provided).
+    Consider also the user's preferences on styling and layout if provided: {layout_requirements}
+    Focus on:
+      - Page structure, spacing, section layout, typography, and visual hierarchy
+      - Visual consistency with the overall design system and reusable UI elements
+      - Styling must be done using SCSS modules (e.g. `home.module.scss`)
+      - Use the `className` values already defined in the page JSX structure — style them accordingly in SCSS.
+      - Do not rename classNames or modify the JSX structure unless absolutely necessary — styling should match the structure.
+      - If a page lacks meaningful `className`s, recommend updates in a side note but continue styling what is available.
+    You must:
+      - Compare the page layout visually to the provided wireframe and ensure all sections are properly aligned, spaced, and ordered.
+      - Fix any visual layout issues (e.g. padding, alignment, width, responsive behavior)
+    You must not:
+      - Modify any logic, props, or API calls
+      - Apply component-level styles (these are handled in a separate task)
+    Ensure that each page correctly imports its SCSS module and all styles remain scoped and modular.
+  expected_output: >
+    Return the SCSS Styles documents for each styled page layout in the following format:
+    files:
+      - name: styled page name
+        path: <relative path from src> (e.g. "styles/pages/dashboard.module.scss", "styles/pages/login.module.scss")
+        type: page
+        content: |
+          // SCSS stylings
+        description: Description of the style file and its purpose
+        targets e.g.:
+          - class: page-wrapper
+          - class: header-section
+          - class: content-grid
+  agent: frontend_ui_designer
+  context: [wireframe_generation_task, validate_nextjs_code_task, style_components_task]
+
+
+
+
+# validate_nextjs_code_task:
+#   description: >
+#     Conduct a detailed review of the React components and Next.js page structures.
+#     You MUST check for:
+#       - Component modularity, reusability, and separation of concerns.
+#       - Semantic correctness and accessibility compliance (ARIA roles, alt texts, proper HTML tags).
+#       - Consistency in naming conventions, imports, and file organization.
+#       - Correct Calls to the API-Endpoints (if inlcuded and necessary)
+#       - Correct use of state management and props (check for unnecessary state duplication).
+#       - Presence of error handling mechanisms.
+#     Provide a well-structured validation report with detailed findings and suggestions categorized by severity (High, Medium, Low).
+#   expected_output: >
+#     A comprehensive validation report including:
+#       - Summary of any structural inconsistencies or deviations from planned architecture.
+#       - Accessibility and semantic issues found.
+#       - Any potential performance, error handling, or state management concerns.
+#       - Suggested improvements with clear recommendations and priority levels.
+#       - Confirmation if the code is APPROVED or NEEDS CHANGES from the before integration.
+#       - Direct actionable feedback for the nextjs_frontend_developer, to improve the code.
+#   agent: frontend_code_reviewer
+#   context: [implement_api_calls_task]
+
+# plan_api_integration_task:
+#   description: >
+#     If API calls are required (based on the user input: {api_call}),
+#     define how and where the API-Call and fetching should be integrated into the Next.js project.
+#     For each component requiring API calls:
+#       - Map the required API endpoints.
+#       - Choose the best data-fetching strategy (client-side, server-side, static, etc.).
+#       - Ensure correct request methods and response handling.
+#       - Define an appropriate error-handling mechanism.
+#     Skip this task if the user input {api_call} is "No" and no components require API calls.
+#   expected_output: >
+#     - A strucutred file plan for a later implementation by the nextjs_frontend_developer listing:
+#       - Components that need API calls.
+#       - Endpoints used.
+#       - Fetching strategies.
+#       - Response and error handling approach.
+#   agent: frontend_software_engineer
+#   context: [plan_component_structure_task]
+
+# implement_api_calls_task:
+#   description: >
+#     If API calls are required (based on the user input: {api_call}),
+#     implement API calls only for components that require them . 
+#     - Use the correct Next.js data-fetching methods.
+#     - Implement API request handling, loading states, and errors.
+#     - Ensure API responses are correctly mapped to UI components.
+#     - Follow best practices for security and performance.
+#     If no API calls are needed, skip this task.
+#   expected_output: >
+#     - Updated React components with API calls.
+#     - Summary of:
+#       - Implemented API calls.
+#       - Endpoints used.
+#       - State and error handling mechanisms.
+#   agent: nextjs_frontend_developer
+#   context: [implement_nextjs_components_task]
 
 
 
