@@ -25,11 +25,11 @@ def run():
         return user_input.strip() if user_input.strip() != "" else default
 
     inputs = {
-        'feature_description': get_input("📝 Describe the feature you'd like to build", "Login screen with email & password input"),
+        'feature_description': get_input("📝  Describe the feature you'd like to build", "Login screen with email & password input"),
         'functional_requirements': get_input("⚙️  What are the key functional requirements?", "User authentication, error handling for missing fields"),
-        'layout_requirements': get_input("🎨 Any layout or design preferences?", "Image on the left, Form on the right, clean and modern UI"),
-        'image_asset': get_input("🖼️ Description of the image if an asset needs to be generated", "No"),
-        'edge_cases': get_input("🚧 Any specific edge cases or error scenarios to handle?", "Error message on login failure or empty fields"),
+        'layout_requirements': get_input("🎨  Any layout or design preferences?", "Image on the left, Form on the right, clean and modern UI"),
+        'image_asset': get_input("🖼️  Description of the image if an asset needs to be generated", "No"),
+        'edge_cases': get_input("🚧  Any specific edge cases or error scenarios to handle?", "Error message on login failure or empty fields"),
         'api_call': get_input("📞 Is there an API Endpoint that need to be called for this page?", "No")
     }
 

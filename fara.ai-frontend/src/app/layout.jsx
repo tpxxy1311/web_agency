@@ -1,7 +1,7 @@
 import { Outfit } from "next/font/google";
 import "./globals.css";
 import { cookies } from 'next/headers';
-import Providers from "@/components/provider";
+// import Providers from "@/components/provider";
 
 
 const outfit = Outfit({
@@ -31,9 +31,7 @@ export default function RootLayout({ children }) {
         <meta name="theme-color" content="#374B3E"/>
       </head>
       <body className={outfit.className}>
-        <Providers>
           {children}
-        </Providers>
       </body>
     </html>
   );
