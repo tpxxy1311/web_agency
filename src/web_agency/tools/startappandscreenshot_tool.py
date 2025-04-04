@@ -6,21 +6,30 @@ from pathlib import Path
 from playwright.sync_api import sync_playwright
 
 @tool("Next.js App Screenshot Tool")
-def run_nextjs_and_screenshot(project_path: str = "../../fara.ai-frontend", wait_time: int = 30) -> str:
+def run_nextjs_and_screenshot(
+    project_path: str = "../../fara.ai-frontend",
+    url_path: str = "/",
+    wait_time: int = 30
+) -> str:
     """
-    Starting the Next.js Development Server and to take and safe a Screenshot Image of the Site
-    
+    Starts the Next.js development server, navigates to a specified route, captures a screenshot,
+    and saves it into the CrewAI project's 'Quality Assurance' directory.
+
     Args:
-        project_path (str): String-URL with a Link to the generated Image by Dall-E
-        wait_time (int): Absolute file path where the image has to be safed
-    
+        project_path (str): Absolute or relative path to the Next.js project directory.
+        url_path (str): Path of the page to screenshot (e.g. "/login", "/dashboard").
+        wait_time (int): Time in seconds to wait for the dev server to be available.
+
     Returns:
-        str: Path of the safed image, so it can be analyzed by an other agent
+        str: A success message with screenshot path or an error message if something fails.
     """
     try:
         project_abs_path = Path(project_path).resolve()
+        crew_root_path = Path.cwd().resolve()
+        qa_dir = crew_root_path / "quality assurance"
+        qa_dir.mkdir(parents=True, exist_ok=True)  # ✅ Ensure the QA folder exists
 
-        # ✅ Starting Windows Subrpocess with the shell
+        # Start the Next.js dev server using Windows-compatible shell command
         process = subprocess.Popen(
             "npm run dev",
             cwd=project_abs_path,
@@ -30,10 +39,8 @@ def run_nextjs_and_screenshot(project_path: str = "../../fara.ai-frontend", wait
             shell=True
         )
 
-        print("⏳ Waiting for local server to start...")
-        # Waiting till the server is really online
-        timeout = 30  #Seconds
-        for _ in range(timeout):
+        print("⏳ Waiting for the dev server to become available...")
+        for _ in range(wait_time):
             try:
                 res = requests.get("http://localhost:3000")
                 if res.status_code == 200:
@@ -42,18 +49,23 @@ def run_nextjs_and_screenshot(project_path: str = "../../fara.ai-frontend", wait
                 time.sleep(1)
         else:
             process.terminate()
-            return "❌ Server under http://localhost:3000 not accessible."
+            return "❌ Could not reach http://localhost:3000 after waiting."
 
-        screenshot_path = str(project_abs_path / "screenshot.png")
+        # Create a clean filename based on the requested URL path
+        clean_path = url_path.strip("/").replace("/", "_") or "homepage"
+        screenshot_path = qa_dir / f"screenshot_{clean_path}.png"
+
+        # Take the screenshot using Playwright
         with sync_playwright() as p:
             browser = p.chromium.launch(headless=True)
             page = browser.new_page()
-            page.goto("http://localhost:3000")
-            page.screenshot(path=screenshot_path)
+            full_url = f"http://localhost:3000{url_path}"
+            page.goto(full_url)
+            page.screenshot(path=str(screenshot_path))
             browser.close()
 
         process.terminate()
-        return f"✅ Screenshot saved under: {screenshot_path}"
+        return f"✅ Screenshot of '{url_path}' saved at: {screenshot_path}"
 
     except Exception as e:
-        return f"❌ Error while executing this tool: {str(e)}"
+        return f"❌ Error while executing the screenshot tool: {str(e)}"

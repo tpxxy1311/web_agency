@@ -136,12 +136,20 @@ class WebAgency():
 	# 		tools=[FileWriterTool()],
 	# 	)
 
+	# @agent
+	# def screenshot_provider(self) -> Agent:
+	# 	return Agent(
+	# 		config=self.agents_config['screenshot_provider'],
+	# 		verbose=True,
+	# 		tools=[run_nextjs_and_screenshot]
+	# 	)
+
 	@agent
-	def screenshot_provider(self) -> Agent:
+	def ux_qa_analyst(self) -> Agent:
 		return Agent(
-			config=self.agents_config['screenshot_provider'],
+			config=self.agents_config['ux_qa_analyst'],
 			verbose=True,
-			tools=[run_nextjs_and_screenshot]
+			multimodal=True,
 		)
 
 	# To learn more about structured task outputs, 
@@ -265,10 +273,16 @@ class WebAgency():
 	# 		config=self.tasks_config['bind_scss_imports_task'],
 	# 	)
 	
+	# @task
+	# def take_screenshot_task(self) -> Task:
+	# 	return Task(
+	# 		config=self.tasks_config['screenshot_and_analyze_task'],
+	# 	)
+
 	@task
-	def screenshot_and_analyze_task(self) -> Task:
+	def analyze_screenshot_task(self) -> Task:
 		return Task(
-			config=self.tasks_config['screenshot_and_analyze_task'],
+			config=self.tasks_config['analyze_screenshot_task'],
 		)
 
 	

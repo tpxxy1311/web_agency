@@ -30,7 +30,8 @@ def run():
         'layout_requirements': get_input("🎨  Any layout or design preferences?", "Image on the left, Form on the right, clean and modern UI"),
         'image_asset': get_input("🖼️  Description of the image if an asset needs to be generated", "No"),
         'edge_cases': get_input("🚧  Any specific edge cases or error scenarios to handle?", "Error message on login failure or empty fields"),
-        'api_call': get_input("📞 Is there an API Endpoint that need to be called for this page?", "No")
+        'url_path': get_input("🔎 Under which URL should be the new page accessible?", "/login"),
+        'api_call': get_input("📞  Is there an API Endpoint that need to be called for this page?", "No")
     }
 
     result = WebAgency().crew().kickoff(inputs=inputs)

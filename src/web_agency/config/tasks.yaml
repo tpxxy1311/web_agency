@@ -452,15 +452,43 @@
 #   agent: frontend_file_writer
 #   context: [write_nextjs_code_task, write_scss_styles_task]
 
-screenshot_and_analyze_task:
+# take_screenshot_task:
+#   description: >
+#     Use the custom tool to start the Next.js development server in the specified project path.
+#     Once the server is live, open the new page developed by the previous agents under {url_path} in a headless playwright browser, 
+#     capture a screenshot, and return the screenshot path for further analysis.
+#     The project path is ../../fara.ai-frontend.
+#   expected_output: >
+#     A success message with the saved screenshot path or an error message if the operation failed.
+#   agent: screenshot_provider
+
+analyze_screenshot_task:
   description: >
-    Use the custom tool to start the Next.js development server in the specified project path.
-    Once the server is live, open the homepage in a headless playwright browser, capture a screenshot,
-    and return the screenshot path for further analysis.
-    The project path is ../../fara.ai-frontend.
+    Analyze the provided UI screenshot stored under the 'quality assurance\Screenshot 2025-04-04 103700.png' folder based on modern UX and UI design principles.
+    You must evaluate the following:
+      - Layout structure and spacing (e.g. alignment, grid, padding)
+      - Visual hierarchy and scannability (titles, buttons, CTA prominence)
+      - Accessibility (contrast ratios, font sizes, touch targets, alt-text assumptions)
+      - UI consistency (color scheme, button shapes, margin/padding standards)
+      - First impression / emotional tone
+    Based on this evaluation, return a comprehensive UX Audit Report.
   expected_output: >
-    A success message with the saved screenshot path or an error message if the operation failed.
-  agent: screenshot_provider
+    A full UX Audit Report structured as follows:
+      - status: PASSED | NEEDS IMPROVEMENTS | FAILED
+      - positive_aspects:
+          - Short bullet points of good UI and UX decisions
+      - issues_detected:
+          - Problem description
+          - UX principle violated (e.g. "Poor contrast", "Visual clutter")
+          - Suggested fix
+      - accessibility_notes:
+          - WCAG or usability issues observed
+      - layout_notes:
+          - Spacing, grid or alignment concerns
+      - overall_score: 1–10 (subjective rating of visual usability and clarity)
+      - final_recommendation: One paragraph of actionable next steps for the UI team
+  agent: ux_qa_analyst
+
 
 
 
