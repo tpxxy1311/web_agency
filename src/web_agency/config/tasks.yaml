@@ -464,7 +464,7 @@
 
 analyze_screenshot_task:
   description: >
-    Analyze the provided UI screenshot stored under the 'quality assurance\Screenshot 2025-04-04 103700.png' folder based on modern UX and UI design principles.
+    Use the Vision Tool to analyze the provided UI screenshot stored in the path './quality_assurance/screen.png' folder based on modern UX and UI design principles.
     You must evaluate the following:
       - Layout structure and spacing (e.g. alignment, grid, padding)
       - Visual hierarchy and scannability (titles, buttons, CTA prominence)

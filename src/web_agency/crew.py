@@ -3,13 +3,13 @@ from crewai.project import CrewBase, agent, crew, task
 from tools.wireframe_tool import render_wireframe
 from tools.saveimage_tool import save_image_from_url
 from tools.startappandscreenshot_tool import run_nextjs_and_screenshot
-from crewai_tools import FileWriterTool, CodeDocsSearchTool, DirectoryReadTool, FileReadTool, DallETool
+from crewai_tools import FileWriterTool, CodeDocsSearchTool, DirectoryReadTool, FileReadTool, DallETool, VisionTool
 from dotenv import load_dotenv
 
 #Load Environment Variables such as API Keys
 load_dotenv()
 
-
+vision_tool = VisionTool(image_path_url="quality_assurance/screen.png")
 # If you want to run a snippet of code before or after the crew starts, 
 # you can use the @before_kickoff and @after_kickoff decorators
 # https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
@@ -124,6 +124,7 @@ class WebAgency():
 	# 	return Agent(
 	# 		config=self.agents_config['frontend_ui_designer'],
 	# 		verbose=True,
+	#     	memory=True,
 	# 		tools=[FileReadTool(file_path='../../fara.ai-frontend/src/app/globals.css')],
 	# 		llm='gpt-4o'
 	# 	)
@@ -150,6 +151,7 @@ class WebAgency():
 			config=self.agents_config['ux_qa_analyst'],
 			verbose=True,
 			multimodal=True,
+			llm='gpt-4o',
 		)
 
 	# To learn more about structured task outputs, 
@@ -163,7 +165,7 @@ class WebAgency():
 	# 	)
 
 	# @task
-	# def define_components_task(self) -> Task:
+	# def define_components_stask(self) -> Task:
 	# 	return Task(
 	# 		config=self.tasks_config['define_components_task'],
 	# 	)
@@ -283,6 +285,7 @@ class WebAgency():
 	def analyze_screenshot_task(self) -> Task:
 		return Task(
 			config=self.tasks_config['analyze_screenshot_task'],
+			tools=[VisionTool()]
 		)
 
 	
