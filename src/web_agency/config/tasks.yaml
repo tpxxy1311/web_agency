@@ -1,20 +1,21 @@
-# requirement_analysis_task:
-#   description: >
-#     Analyze the user's input and extract structured functional and design requirements for the web page.
-#     Ensure that the extracted information is well-structured, clear, and useful for UX designers and developers.
-#     Pay special attention to accessibility considerations to ensure usability for all users and platform-specific needs.
-#     Provided user inputs:
-#     - Feature description: {feature_description}
-#     - Functional requirements: {functional_requirements}
-#     - Visual/design preferences: {layout_requirements}
-#     - Edge cases: {edge_cases}
-#     - API Calls: {api_call}
-#   expected_output: >
-#     A structured document containing:
-#     - Functional requirements (core functionalities, user actions, API Calls)
-#     - Non-functional and design requirements (layout, visual preferences)
-#     - Accessibility considerations (contrast, keyboard navigation, responsiveness)
-#   agent: requirement_analyst
+requirement_analysis_task:
+  description: >
+    Analyze the user's input and extract structured functional and design requirements for the web page.
+    Ensure that the extracted information is well-structured, clear, and useful for UX designers and developers.
+    Pay special attention to UX and accessibility considerations to ensure usability for all users and 
+    platform-specific needs.
+    Provided user inputs:
+    - Feature description: {feature_description}
+    - Functional requirements: {functional_requirements}
+    - Visual/design preferences: {layout_requirements}
+    - Edge cases: {edge_cases}
+    - API Calls: {api_call}
+  expected_output: >
+    A structured document containing:
+    - Functional requirements (core functionalities, user actions, API calls)
+    - Non-functional and design requirements (layout, visual preferences)
+    - UX and Accessibility considerations (contrast, keyboard navigation, responsiveness)
+  agent: requirement_analyst
 
 # define_components_task:
 #   description: >
