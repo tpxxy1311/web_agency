@@ -22,21 +22,28 @@ class WebAgency():
 	# Learn more about YAML configuration files here:
 	# Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
 	# Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
+	
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-	# Load API knowledge from JSON file
-	# json_source = JSONKnowledgeSource(file_paths=["api_documentation.json"])
-	# If you would like to add tools to your agents, you can learn more about it here:
-	# https://docs.crewai.com/concepts/agents#agent-tools
-	# @agent
-	# def requirement_analyst(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['requirement_analyst'],
-	# 		verbose=True,
-	# 		memory=True,
-	# 		llm='gpt-4o'
-	# 	)
+
+	@agent
+	def requirement_analyst(self) -> Agent:
+		return Agent(
+			config=self.agents_config['requirement_analyst'],
+			verbose=True,
+			memory=True,
+			llm='gpt-4o'
+		)
+	
+	@task
+	def requirement_analysis_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['requirement_analysis_task'],
+		)
+	
+
+
 	
 	# @agent
 	# def wireframe_parser(self) -> Agent:
@@ -158,11 +165,11 @@ class WebAgency():
 	# task dependencies, and task callbacks, check out the documentation:
 	# https://docs.crewai.com/concepts/tasks#overview-of-a-task
 
-	# @task
-	# def requirement_analysis_task(self) -> Task:
-	# 	return Task(
-	# 		config=self.tasks_config['requirement_analysis_task'],
-	# 	)
+	@task
+	def requirement_analysis_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['requirement_analysis_task'],
+		)
 
 	# @task
 	# def define_components_stask(self) -> Task:
