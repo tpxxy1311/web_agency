@@ -26,7 +26,6 @@ class WebAgency():
 	agents_config = 'config/agents.yaml'
 	tasks_config = 'config/tasks.yaml'
 
-
 	@agent
 	def requirement_analyst(self) -> Agent:
 		return Agent(
@@ -41,9 +40,6 @@ class WebAgency():
 		return Task(
 			config=self.tasks_config['requirement_analysis_task'],
 		)
-	
-
-
 	
 	# @agent
 	# def wireframe_parser(self) -> Agent:
@@ -97,24 +93,26 @@ class WebAgency():
 	# 		llm='gpt-4o',
 	# 	)
 	
-	# @agent
-	# def image_asset_designer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['image_asset_designer'],
-	# 		verbose=True,
-	# 		tools=[DallETool()],
-	# 		llm='gpt-4o',
-	# 	)
+	@agent
+	def image_asset_designer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['image_asset_designer'],
+			verbose=True,
+			tools=[DallETool()],
+			llm='gpt-4o',
+		)
 
-	# @agent
-	# def nextjs_frontend_developer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['nextjs_frontend_developer'],
-	# 		verbose=True,
-	# 		memory=True,
-	# 		llm='gpt-4o',
-	# 		tools=[CodeDocsSearchTool()],
-	# 	)
+	@agent
+	def nextjs_frontend_developer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['nextjs_frontend_developer'],
+			verbose=True,
+			memory=True,
+			llm='gpt-4o',
+			tools=[CodeDocsSearchTool(),
+				FileReadTool(file_path='../../knowledge/api_documentation.json')
+			],
+		)
 	
 	# @agent
 	# def frontend_code_reviewer(self) -> Agent:
@@ -165,11 +163,11 @@ class WebAgency():
 	# task dependencies, and task callbacks, check out the documentation:
 	# https://docs.crewai.com/concepts/tasks#overview-of-a-task
 
-	@task
-	def requirement_analysis_task(self) -> Task:
-		return Task(
-			config=self.tasks_config['requirement_analysis_task'],
-		)
+	# @task
+	# def requirement_analysis_task(self) -> Task:
+	# 	return Task(
+	# 		config=self.tasks_config['requirement_analysis_task'],
+	# 	)
 
 	# @task
 	# def define_components_stask(self) -> Task:
@@ -299,11 +297,13 @@ class WebAgency():
 	@crew
 	def crew(self) -> Crew:
 		"""Creates the WebAgency crew"""
+		# To learn how to add knowledge sources to your crew, check out the documentation:
+		# https://docs.crewai.com/concepts/knowledge#what-is-knowledge
 
 		return Crew(
 			agents=self.agents, # Automatically created by the @agent decorator
 			tasks=self.tasks, # Automatically created by the @task decorator
 			process=Process.sequential,
 			verbose=True,
+			# process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
 		)
-
