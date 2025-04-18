@@ -41,57 +41,57 @@ class WebAgency():
 			config=self.tasks_config['requirement_analysis_task'],
 		)
 	
-	# @agent
-	# def wireframe_parser(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['wireframe_parser'],
-	# 		verbose=True,
-	# 		memory=True,
-	# 	)
+	@agent
+	def wireframe_parser(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_parser'],
+			verbose=True,
+			memory=True,
+		)
 	
-	# @agent
-	# def wireframe_visualizer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['wireframe_visualizer'],
-	# 		verbose=True,
-	# 	)
+	@agent
+	def wireframe_visualizer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_visualizer'],
+			verbose=True,
+		)
 	
-	# @agent
-	# def wireframe_designer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['wireframe_designer'],
-	# 		verbose=True,
-	# 		memory=True,
-	# 		max_retry_limit=3,
-	# 		llm='gpt-4o'
-	# 	)
+	@agent
+	def wireframe_designer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_designer'],
+			verbose=True,
+			memory=True,
+			max_retry_limit=3,
+			llm='gpt-4o'
+		)
 
-	# @agent
-	# def wireframe_validator(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['wireframe_validator'],
-	# 		verbose=True,
-	# 		tools=[FileWriterTool()],
-	# 		llm='gemini/gemini-1.5-flash'
-	# 	)
+	@agent
+	def wireframe_validator(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_validator'],
+			verbose=True,
+			tools=[FileWriterTool()],
+			llm='gemini/gemini-1.5-flash'
+		)
 
-	# @agent
-	# def wireframe_file_writer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['wireframe_file_writer'],
-	# 		verbose=True,
-	# 		tools=[FileWriterTool()],
-	# 	)
+	@agent
+	def wireframe_file_writer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['wireframe_file_writer'],
+			verbose=True,
+			tools=[FileWriterTool()],
+		)
 	
-	# @agent
-	# def frontend_software_engineer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['frontend_software_engineer'],
-	# 		verbose=True,
-	# 		tools=[DirectoryReadTool(directory_path='../../fara.ai-frontend/src')],
-	# 		memory=True,
-	# 		llm='gpt-4o',
-	# 	)
+	@agent
+	def frontend_software_engineer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_software_engineer'],
+			verbose=True,
+			tools=[DirectoryReadTool(directory_path='../../fara.ai-frontend/src')],
+			memory=True,
+			llm='gpt-4o',
+		)
 	
 	@agent
 	def image_asset_designer(self) -> Agent:
@@ -109,7 +109,8 @@ class WebAgency():
 			verbose=True,
 			memory=True,
 			llm='gpt-4o',
-			tools=[CodeDocsSearchTool(),
+			tools=[
+				CodeDocsSearchTool(),
 				FileReadTool(file_path='../../knowledge/api_documentation.json')
 			],
 		)
