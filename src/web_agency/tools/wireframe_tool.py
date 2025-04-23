@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import json
 import os
 
-@tool
+@tool("RenderWireframrTool")
 def render_wireframe(json_data: str) -> str:
     """
     Erstellt ein Wireframe-Bild aus einer JSON-Beschreibung der UI-Komponenten.

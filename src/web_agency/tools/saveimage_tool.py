@@ -19,3 +19,4 @@ def save_image_from_url(image_url: str, file_path: str) -> str:
             f.write(response.content)
         return f"Image saved successfully to {file_path}"
     return f"Failed to download image. Status code: {response.status_code}"
+

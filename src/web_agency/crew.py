@@ -115,15 +115,16 @@ class WebAgency():
 			],
 		)
 	
-	# @agent
-	# def frontend_code_reviewer(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['frontend_code_reviewer'],
-	# 		verbose=True,
-	# 		memory=True,
-	# 		tools=[CodeDocsSearchTool()],
-	# 		llm='gemini/gemini-1.5-pro'
-	# 	)
+	@agent
+	def frontend_code_reviewer(self) -> Agent:
+		return Agent(
+			config=self.agents_config['frontend_code_reviewer'],
+			verbose=True,
+			memory=True,
+			tools=[CodeDocsSearchTool()],
+			allow_delegation=True,
+			llm='gemini/gemini-1.5-pro'
+		)
 
 	# @agent
 	# def frontend_ui_designer(self) -> Agent:
