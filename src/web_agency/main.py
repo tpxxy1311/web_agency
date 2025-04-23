@@ -19,7 +19,7 @@ def run():
     print("🚀 Crew startet...")  # Debugging-Print
     session = agentops.init(api_key=os.getenv("AGENTOPS_API_KEY")) # Start AgentOps Session
     
-
+    #Collecting User Input
     def get_input(prompt, default):
         user_input = input(f"{prompt} (Default: {default}): ")
         return user_input.strip() if user_input.strip() != "" else default
@@ -35,8 +35,6 @@ def run():
     }
 
     result = WebAgency().crew().kickoff(inputs=inputs)
-    
-    
     
     print(result)
 
