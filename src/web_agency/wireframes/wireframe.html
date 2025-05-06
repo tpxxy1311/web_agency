@@ -7,60 +7,39 @@
     <style>
         body {
             display: flex;
-            width: 1024px;
-            height: 720px;
             margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        #container {
-            display: grid;
-            grid-template-columns: 512px 1fr;
-            gap: 20px;
-            padding: 20px;
-            box-sizing: border-box;
-            width: 100%;
-        }
-        .image {
-            background-color: #eee;
-            width: 512px;
             height: 720px;
+            width: 1024px;
         }
-        .form-section {
+        .image-container {
+            flex: 0 0 512px;
+            height: 100%;
+            border-right: 1px solid #ccc;
+        }
+        .form-container {
+            flex: 0 0 512px;
             display: flex;
             flex-direction: column;
-            gap: 5px;
-            padding-top: 50px;
+            justify-content: flex-start;
+            align-items: center;
+            height: 100%;
         }
-        input, .error-message, button {
-            width: 400px;
-        }
-        input {
-            height: 40px;
-        }
-        .error-message {
-            height: 20px;
-            color: red;
-        }
-        button {
-            height: 50px;
-            margin-top: 25px;
-            background-color: #ddd;
-            border: none;
+        .input-field, .button, .other-field {
+            width: 440px;
+            margin: 10px 0;
+            text-align: center;
         }
     </style>
 </head>
 <body>
-    <div id="container">
-        <div class="image">
-            <!-- Image placeholder -->
-        </div>
-        <div class="form-section">
-            <input type="text" placeholder="Input Field 1">
-            <div class="error-message">Error message here</div>
-            <input type="text" placeholder="Input Field 2">
-            <div class="error-message">Error message here</div>
-            <button>Submit</button>
-        </div>
+    <div class="image-container">
+        <img src="#" alt="Image Placeholder" style="width:100%; height:100%;">
     </div>
+    <section class="form-container" role="form">
+        <input type="text" class="input-field" placeholder="Input Field 1">
+        <input type="text" class="input-field" placeholder="Input Field 2">
+        <div class="other-field">Other Content</div>
+        <button type="button" class="button">Submit</button>
+    </section>
 </body>
 </html>
