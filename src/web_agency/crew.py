@@ -127,7 +127,7 @@ class WebAgency():
 			config=self.agents_config['frontend_ui_designer'],
 			verbose=True,
 	    	memory=True,
-			tools=[FileReadTool(file_path='../../fara.ai-frontend/src/app/globals.css')],
+			tools=[FileReadTool(file_path='../../knowledge/styleguide.css')],
 			llm='gpt-4o'
 		)
 	
@@ -138,23 +138,32 @@ class WebAgency():
 			verbose=True,
 			tools=[FileWriterTool()],
 		)
+	
+	@agent
+	def scss_import_linker(self) -> Agent:
+		return Agent(
+			config=self.agents_config['scss_import_linker'],
+			verbose=True,
+			max_iter=3,
+		)
 
-	# @agent
-	# def screenshot_provider(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['screenshot_provider'],
-	# 		verbose=True,
-	# 		tools=[run_nextjs_and_screenshot]
-	# 	)
+	@agent
+	def screenshot_provider(self) -> Agent:
+		return Agent(
+			config=self.agents_config['screenshot_provider'],
+			verbose=True,
+			max_iter=3,
+			tools=[run_nextjs_and_screenshot]
+		)
 
-	# @agent
-	# def ux_qa_analyst(self) -> Agent:
-	# 	return Agent(
-	# 		config=self.agents_config['ux_qa_analyst'],
-	# 		verbose=True,
-	# 		multimodal=True,
-	# 		llm='gpt-4o',
-	# 	)
+	@agent
+	def ux_qa_analyst(self) -> Agent:
+		return Agent(
+			config=self.agents_config['ux_qa_analyst'],
+			verbose=True,
+			multimodal=True,
+			llm='gpt-4o',
+		)
 
 	# To learn more about structured task outputs, 
 	# task dependencies, and task callbacks, check out the documentation:
@@ -247,11 +256,6 @@ class WebAgency():
 			config=self.tasks_config['validate_nextjs_code_task'],
 		)
 
-	@task
-	def write_nextjs_code_task(self) -> Task:
-		return Task(
-			config=self.tasks_config['write_nextjs_code_task'],
-		)
 	
 	@task
 	def style_components_task(self) -> Task:
@@ -277,18 +281,24 @@ class WebAgency():
 			config=self.tasks_config['bind_scss_imports_task'],
 		)
 	
-	# @task
-	# def take_screenshot_task(self) -> Task:
-	# 	return Task(
-	# 		config=self.tasks_config['take_screenshot_task'],
-	# 	)
+	@task
+	def write_nextjs_code_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['write_nextjs_code_task'],
+		)
+	
+	@task
+	def take_screenshot_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['take_screenshot_task'],
+		)
 
-	# @task
-	# def analyze_screenshot_task(self) -> Task:
-	# 	return Task(
-	# 		config=self.tasks_config['analyze_screenshot_task'],
-	# 		tools=[VisionTool()]
-	# 	)
+	@task
+	def analyze_screenshot_task(self) -> Task:
+		return Task(
+			config=self.tasks_config['analyze_screenshot_task'],
+			tools=[VisionTool(image_path_url="quality assurance/screen.png")]
+		)
 
 	
 	@crew
@@ -299,6 +309,6 @@ class WebAgency():
 			agents=self.agents, # Automatically created by the @agent decorator
 			tasks=self.tasks, # Automatically created by the @task decorator
 			process=Process.sequential,
-			verbose=True,
+			# verbose=True,
 		)
 

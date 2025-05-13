@@ -1,0 +1,161 @@
+/* ────────────────────────────────────────
+🌿 COLOR DESIGN TOKENS (THEME)
+──────────────────────────────────────── */
+
+/* PRIMARY BRAND COLORS */
+:root {
+    --background: #F6FBF4;
+  
+    /* Primary */
+    --primary-green: #285A3F;
+    --primary-green-hover: #214a34;
+    --on-primary: #ADF2C6;
+    --on-primary-hover: #a2e2ba;
+  
+    /* Secondary */
+    --secondary-green: #97BB9E;
+    --secondary-green-hover: #85a78c;
+    --on-secondary: #374B3E;
+  
+    /* Tertiary */
+    --tertiary-green: #D1E8D6;
+    --tertiary-green-hover: #bddcc3;
+    --on-tertiary: #0B1F14;
+  
+    /* Accent */
+    --arrow-green: #438460;
+    --arrow-blue: #44839a;
+    --arrow-beige: #9f8059;
+  }
+  
+  /* CONTAINERS & SURFACES */
+  :root {
+    --container: #EAEFE8;
+    --container-hover: #e0e5de;
+    --container-contrast: #BFC8BF;
+    --container-contrast-hover: #b3bbb3;
+    --container-contrast-hover-contrast: rgb(164, 173, 164);
+    --container-overlay: #eaefe87e;
+    --overlay: #ffffffa0;
+  }
+  
+  /* TYPOGRAPHY */
+  :root {
+    --font: #000000;
+    --font-variant: #404941;
+    --font-invert: #ffffff;
+    --outline: #707971;
+  }
+  
+  /* FEEDBACK COLORS */
+  :root {
+    --error: #ffb4ab;
+    --on-error: #690005;
+
+  }
+
+  
+  /* ────────────────────────────────────────
+  🧩 UTILITY CLASSES (OPTIONAL FOR DESIGNER)
+  ──────────────────────────────────────── */
+  
+ /* Text */
+.text-variant {
+    color: var(--font-variant);
+}
+  
+.text-invert {
+    color: var(--font-invert);
+  }
+
+.main-headline {
+    color: var(--font);
+    font-size: 2rem;
+    font-weight: 500;
+}
+  
+.sub-headline {
+    color: var(--font);
+    font-size: 1.2rem;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+  
+.paragraph-text {
+    color: var(--font-variant);
+    font-size: 1rem;
+    font-weight: 400;
+}
+  
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-green);
+    color: var(--on-primary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+  
+.btn-primary:hover {
+    background-color: var(--primary-green-hover);
+    color: var(--on-primary-hover);
+}
+  
+.btn-secondary {
+    background-color: var(--secondary-green);
+    color: var(--on-secondary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+  
+.btn-secondary:hover {
+    background-color: var(--secondary-green-hover);
+    color: var(--on-secondary);
+}
+
+.icon-btn-secondary {
+    background-color: var(--secondary-green);
+    color: var(--on-secondary);
+    padding: 0.75rem 1.5rem;
+    border-radius: 25px;
+    border: none;
+    transition: background-color 0.2s ease;
+}
+  
+.btn-tertiary {
+    background-color: var(--container-contrast);
+    color: var(--font);
+}
+  
+  /* Containers and Boxed */
+  
+.card {
+    background-color: var(--container);
+    padding: 1.5rem;
+    border-radius: 15px;
+}
+  
+.image-container{
+    width: 30%;
+    height: 100%;
+    position: relative;
+    border-radius: 15px;
+}
+  
+/* Borders and outline */
+.outline {
+    border: 1px solid var(--outline);
+}
+  
+/* Alerts */
+.alert-error {
+    background-color: var(--error);
+    color: var(--on-error);
+    padding: 1rem;
+    border-radius: 15px;
+}
+  

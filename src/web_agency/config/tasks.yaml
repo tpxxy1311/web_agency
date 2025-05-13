@@ -16,6 +16,7 @@ requirement_analysis_task:
     - Non-functional and design requirements (layout, visual preferences)
     - UX and Accessibility considerations (contrast, keyboard navigation, responsiveness)
   agent: requirement_analyst
+  output_file: requirements.md
 
 define_components_task:
   description: >
@@ -231,11 +232,23 @@ implement_nextjs_components_task:
     Do not apply any visual styling — keep components unstyled for now (use semantic HTML and structure only).
     You must:
       - Implement each seperate component as a code snippet.
+      - Do NOT import or use any SCSS or CSS files at this stage.
+      - Do NOT include `import styles from '...'` statements yet — the styling layer will be handled in a later step.
       - If an image asset was generated (see context), include it appropriately in the layout:
         - As an `<Image src="public/assets/..."/>` from next/image
         - Make sure the Image Component is imported correct
-      - Include meaningful and reusable className attributes in all JSX elements to support future styling via SCSS modules.
+      - Add meaningful and reusable `className` attributes using **SCSS Modules syntax**: 
+        - Instead of strings, use: `className={{styles.className}}` with a corresponding SCSS module to be generated later.
+        - Do NOT use plain class strings like `"login-form"` — always reference `styles.loginForm`, `styles.submitButton`, etc.
+      - If a component or layout needs an icon:
+        - You MAY use MUI Icon components imported like:
+          `import {{Home Outlined}} from "@mui/icons-material";`
+        - Use the icon in JSX like: `<HomeOutlined />`
+      - Ensure each icon element has a semantic className using SCSS Modules syntax.
       - Assemble the components into a full new Next.js page file that uses those components.
+      - **If the component or page uses any client-side features** (e.g., `useState`, `useEffect`, event handlers like `onClick`), you MUST:
+        - Add `"use client"` as the very first line of the file
+        - Ensure all client-only logic is only used in client components
       - Follow exactly the file paths and structure defined in the plan.
       - Output all code in a machine-readable format so the file writer can save it correctly.
     Do NOT save the code — only return the full set of snippets with exact filenames and paths.
@@ -256,6 +269,7 @@ implement_nextjs_components_task:
     The file paths must be accurate so the `frontend_file_writer` can save them automatically.
   agent: nextjs_frontend_developer
   context: [plan_component_structure_task, save_image_asset_task]
+
 
 implement_api_calls_task:
   description: >
@@ -294,7 +308,12 @@ validate_nextjs_code_task:
       - Check if the implemented components and structure fit to the plan, made by the Software Engineer
       - Fix problems related to component modularity, reusability, and separation of concerns.
       - Ensure semantic HTML, proper accessibility (e.g. ARIA roles, alt texts), and HTML best practices.
-      - All Elements have correct classNames for a later styling with SCSS by the UI Designer Agent.
+      - Ensure the following:
+          - The correct classNames for later styling are added, using the SCSS Module Syntax
+          - No raw string classNames like `"login-form"` are used
+      - Check whether `"use client"` is required:
+          - MUST be present at the top of the file if `useState`, `useEffect`, or event handlers (`onClick`, etc.) are used
+          - MUST NOT be added if no client-side logic exists
       - Correct any inconsistencies in naming conventions, imports, or file paths.
       - Review and improve API call logic, error boundaries, and state handling.
       - Eliminate duplicated props or unnecessary states.
@@ -320,37 +339,16 @@ validate_nextjs_code_task:
   agent: frontend_code_reviewer
   context: [plan_component_structure_task, implement_api_calls_task, implement_nextjs_components_task]
 
-write_nextjs_code_task:
-  description: >
-    Write the validated and approved React components, Next.js pages, and any other provided files to the Next.js project located at '../../fara.ai-frontend/src'.
-    You MUST:
-      - Read the provided list of files, each containing:
-          - path: relative file path from src/
-          - content: the code to write
-      - Ensure the content is saved **exactly** as received.
-      - Match Next.js App Router conventions:
-          - Auth pages go in: ../../fara.ai-frontend/src/app/(auth)/<page-name>/page.jsx
-          - Main pages go in: ../../fara.ai-frontend/src/app/(main)/<page-name>/page.jsx
-          - Components go in: ../../fara.ai-frontend/src/components/<ComponentName>.jsx
-      - Automatically create folders if they do not exist.
-      - Do not overwrite existing files unless explicitly instructed.
-  expected_output: >
-    - A list of all written files with:
-        - file path
-        - status: WRITTEN | SKIPPED
-    - If skipped due to review status, explain the reason.
-    - All files must be saved in '../../fara.ai-frontend/src' using their relative paths.
-  agent: frontend_file_writer
-  context: [validate_nextjs_code_task]
 
 style_components_task:
   description: >
     Style the previously implemented React components using the design rules defined in the Styleguide (available in the global CSS File provided).
     Consider also the users preferences on styling and layout if needed: {layout_requirements}
+    When styling components and creating the SCSS, always refer to the styleguide and copy definitions from there, if it makes sense.
     Focus on:
       - Visual polish (colors, spacing, typography, hover animations)
       - Consistent use of UI elements across components
-      - Styling can be done using SCSS modules (e.g. ProductCard.module.scss).
+      - Styling must be done using SCSS modules (e.g. ProductCard.module.scss).
       - Use the `className` values already defined in the JSX structure of the components — style them accordingly in SCSS.
       - Do not rename classNames or modify the structure unless absolutely necessary — styling should match the structure.
       - If a component lacks meaningful `className`s, recommend updates in a side note but continue styling what is available.
@@ -376,6 +374,7 @@ style_page_layout_task:
   description: >
     Style the previously implemented Next.js page layout using the design rules defined in the Styleguide (available in the global CSS File provided).
     Consider also the user's preferences on styling and layout if provided: {layout_requirements}
+    When styling components and creating the SCSS, always refer to the styleguide and copy definitions from there, if it makes sense.
     Focus on:
       - Page structure, spacing, section layout, typography, and visual hierarchy
       - Visual consistency with the overall design system and reusable UI elements
@@ -386,7 +385,7 @@ style_page_layout_task:
     You must:
       - Compare the page layout visually to the provided wireframe and ensure all sections are properly aligned, spaced, and ordered.
       - Fix any visual layout issues (e.g. padding, alignment, width, responsive behavior)
-    You must not:
+    Do not:
       - Modify any logic, props, or API calls
       - Apply component-level styles (these are handled in a separate task)
     Ensure that each page correctly imports its SCSS module and all styles remain scoped and modular.
@@ -431,99 +430,97 @@ write_scss_styles_task:
 bind_scss_imports_task:
   description: >
     Add SCSS module import statements directly into each JSX component or page file
-    that was styled in the previous steps. This task will MODIFY the actual JSX files
-    located in '../../fara.ai-frontend/src'.
-
+    before they are saved in the next steps.
     You will receive:
-      - A list of JSX files with relative paths (e.g. "components/LoginForm.jsx", "app/(auth)/login/page.jsx")
-      - A list of corresponding SCSS module files (e.g. "styles/components/LoginForm.module.scss")
-
+      - A list of JSX file details, including:
+        - name: component or page name (e.g., "LoginForm.jsx", "page.jsx")
+        - path: relative path from src/ (e.g., "components/LoginForm.jsx", "app/(auth)/login/page.jsx")
+        - type: component or page
+        - content: the JSX code as it is, without the SCSS import statement
     You MUST:
-      - Match each JSX file to its SCSS module using the component or page name
-      - Add the SCSS import statement at the top of the JSX file in the format:
-          import styles from '@/styles/components/ComponentName.module.scss'
-      - Compute the correct import path based on the JSX file location (use `@/` alias assuming it maps to `src/`)
-      - Skip any file that already includes the correct import
-      - Ensure no JSX logic or structure is altered
-
-    You MUST:
-      - Directly write the updated JSX content into the corresponding file on disk
-      - Overwrite the file only if a new import was added
-      - Create folders if they do not exist (though they should, from earlier steps)
-
+      - Match each JSX file to its corresponding SCSS module file using the component or page name.
+      - Add the SCSS import statement at the top of the JSX file but underneath "use client" in the format:
+          import styles from '@/styles/components/ComponentName.module.scss';
+      - Compute the correct import path based on the JSX file location, using the `@/` .
+      - Skip any JSX file that already includes the correct SCSS import statement.
+      - Ensure that no other content in the JSX file is altered.
+      - Return the JSX content with the SCSS import statement at the top, and pass it to the next task for saving.
   expected_output: >
-    - A list of all JSX files processed, with:
+    Return the files in the following format:
+      files:
+        - name: component or page name
+          path: <relative path from src> (e.g. "components/LoginForm.jsx", "app/(auth)/login/page.jsx")
+          type: component | page
+          content: |
+            // Optional "use client"
+            // SCSS Module File Path @/...
+            // JSX code
+  agent: scss_import_linker
+  context: [implement_nextjs_components_task, validate_nextjs_code_task, write_scss_styles_task]
+
+
+write_nextjs_code_task:
+  description: >
+    Write the validated and approved React components, Next.js pages, and any other provided files 
+    to the Next.js project located at '../../fara.ai-frontend/src'.
+    You MUST:
+      - Read the provided list of files, each containing:
+          - path: relative file path from src/ (e.g. "components/LoginForm.jsx", "app/(auth)/login/page.jsx")
+          - content: the code to write
+      - For every file, prepend '../../fara.ai-frontend/src/' to the path before writing it to disk.
+      - Ensure the content is saved **exactly** as received.
+      - Match Next.js App Router conventions:
+          - Auth pages go in: ../../fara.ai-frontend/src/app/(auth)/<page-name>/page.jsx
+          - Main pages go in: ../../fara.ai-frontend/src/app/(main)/<page-name>/page.jsx
+          - Components go in: ../../fara.ai-frontend/src/components/<ComponentName>.jsx
+      - Automatically create folders if they do not exist.
+      - Do not overwrite existing files unless explicitly instructed.
+  expected_output: >
+    - A list of all written files with:
         - file path
-        - import path used (if any)
         - status: WRITTEN | SKIPPED
-        - reason if skipped (e.g. "Import already exists")
-    - All updates must be saved to '../../fara.ai-frontend/src' under their provided relative paths.
-
+    - If skipped due to review status or missing input, explain the reason.
+    - All files must be saved in '../../fara.ai-frontend/src' using their relative paths.
   agent: frontend_file_writer
-  context: [write_nextjs_code_task, write_scss_styles_task]
+  context: [bind_scss_imports_task]
 
 
-# bind_scss_imports_task:
-#   description: >
-#     Add SCSS module import statements to the top of each JSX component or page file
-#     that was styled in the previous steps.
-#     You will receive:
-#       - A list of JSX files with paths (e.g. "components/LoginForm.jsx", "app/(auth)/login/page.jsx")
-#       - A list of corresponding SCSS module files (e.g. "styles/components/LoginForm.module.scss")
-#     You MUST:
-#       - Match each JSX file to its SCSS module using the component or page name
-#       - Add the import statement at the top of the JSX file:
-#           import styles from '@/styles/components/LoginForm.module.scss'
-#       - Ensure the import path is correct and works from the file's location
-#       - Skip any file that already includes the correct import
-#       - Do NOT modify any logic, JSX structure, or state handling
-#     This task is only concerned with adding missing SCSS imports — not with styling or saving.
-#   expected_output: >
-#     - A list of updated JSX files with:
-#         - path
-#         - updated content (including the import)
-#         - import path used
-#         - status: UPDATED | SKIPPED
-#     - A report of any files that were skipped (with reason)
-#   agent: frontend_file_writer
-#   context: [write_nextjs_code_task, write_scss_styles_task]
+take_screenshot_task:
+  description: >
+    Use the custom tool to start the Next.js development server in the specified project path.
+    Once the server is live, open the new page developed by the previous agents under {url_path} in a headless playwright browser, 
+    capture a screenshot, and return the screenshot path for further analysis.
+    The project path is ../../fara.ai-frontend.
+  expected_output: >
+    A success message with the saved screenshot path or an error message if the operation failed.
+  agent: screenshot_provider
 
-# take_screenshot_task:
-#   description: >
-#     Use the custom tool to start the Next.js development server in the specified project path.
-#     Once the server is live, open the new page developed by the previous agents under {url_path} in a headless playwright browser, 
-#     capture a screenshot, and return the screenshot path for further analysis.
-#     The project path is ../../fara.ai-frontend.
-#   expected_output: >
-#     A success message with the saved screenshot path or an error message if the operation failed.
-#   agent: screenshot_provider
-
-# analyze_screenshot_task:
-#   description: >
-#     Use the Vision Tool to analyze the provided UI screenshot stored in the path './quality_assurance/screen.png' folder based on modern UX and UI design principles.
-#     You must evaluate the following:
-#       - Layout structure and spacing (e.g. alignment, grid, padding)
-#       - Visual hierarchy and scannability (titles, buttons, CTA prominence)
-#       - Accessibility (contrast ratios, font sizes, touch targets, alt-text assumptions)
-#       - UI consistency (color scheme, button shapes, margin/padding standards)
-#       - First impression / emotional tone
-#     Based on this evaluation, return a comprehensive UX Audit Report.
-#   expected_output: >
-#     A full UX Audit Report structured as follows:
-#       - status: PASSED | NEEDS IMPROVEMENTS | FAILED
-#       - positive_aspects:
-#           - Short bullet points of good UI and UX decisions
-#       - issues_detected:
-#           - Problem description
-#           - UX principle violated (e.g. "Poor contrast", "Visual clutter")
-#           - Suggested fix
-#       - accessibility_notes:
-#           - WCAG or usability issues observed
-#       - layout_notes:
-#           - Spacing, grid or alignment concerns
-#       - overall_score: 1–10 (subjective rating of visual usability and clarity)
-#       - final_recommendation: One paragraph of actionable next steps for the UI team
-#   agent: ux_qa_analyst
+analyze_screenshot_task:
+  description: >
+    Use the Vision Tool to analyze the provided UI screenshot stored in the path './quality_assurance/screen.png' folder based on modern UX and UI design principles.
+    You must evaluate the following:
+      - Layout structure and spacing (e.g. alignment, grid, padding)
+      - Visual hierarchy and scannability (titles, buttons, CTA prominence)
+      - Accessibility (contrast ratios, font sizes, touch targets, alt-text assumptions)
+      - UI consistency (color scheme, button shapes, margin/padding standards)
+      - First impression / emotional tone
+    Based on this evaluation, return a comprehensive UX Audit Report.
+  expected_output: >
+    A full UX Audit Report structured as follows:
+      - status: PASSED | NEEDS IMPROVEMENTS | FAILED
+      - positive_aspects:
+          - Short bullet points of good UI and UX decisions
+      - issues_detected:
+          - Problem description
+          - UX principle violated (e.g. "Poor contrast", "Visual clutter")
+          - Suggested fix
+      - accessibility_notes:
+          - WCAG or usability issues observed
+      - layout_notes:
+          - Spacing, grid or alignment concerns
+      - overall_score: 1–10 (subjective rating of visual usability and clarity)
+      - final_recommendation: One paragraph of actionable next steps for the UI team
+  agent: ux_qa_analyst
 
 
 

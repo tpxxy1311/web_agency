@@ -20,8 +20,10 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "eslint": "^9",
+    "eslint": "^9.26.0",
     "eslint-config-next": "15.2.3",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^5.2.0",
     "sass": "^1.86.1"
   }
 }

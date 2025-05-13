@@ -53,7 +53,7 @@ def run_nextjs_and_screenshot(
 
         # Create a clean filename based on the requested URL path
         clean_path = url_path.strip("/").replace("/", "_") or "homepage"
-        screenshot_path = qa_dir / f"screenshot_{clean_path}.png"
+        screenshot_path = qa_dir / f"screen.png"
 
         # Take the screenshot using Playwright
         with sync_playwright() as p:

@@ -72,7 +72,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Outfit', sans-serif;
   background-color: var(--background);
   color: var(--font);
 }
@@ -110,33 +110,13 @@ a {
   color: var(--secondary-green);
 }
 
-/* Backgrounds */
-.bg-container {
-  background-color: var(--container);
-}
-
-.bg-primary {
-  background-color: var(--primary-green);
-}
-
-.bg-secondary {
-  background-color: var(--secondary-green);
-}
-
-.bg-tertiary {
-  background-color: var(--tertiary-green);
-}
-
-.bg-error {
-  background-color: var(--error);
-}
 
 /* Buttons */
 .btn-primary {
   background-color: var(--primary-green);
   color: var(--on-primary);
   padding: 0.75rem 1.5rem;
-  border-radius: 8px;
+  border-radius: 10px;
   border: none;
   transition: background-color 0.2s ease;
 }
@@ -149,6 +129,10 @@ a {
 .btn-secondary {
   background-color: var(--secondary-green);
   color: var(--on-secondary);
+  padding: 0.75rem 1.5rem;
+  border-radius: 10px;
+  border: none;
+  transition: background-color 0.2s ease;
 }
 
 .btn-secondary:hover {
@@ -156,12 +140,24 @@ a {
   color: var(--on-secondary);
 }
 
-/* Containers */
+.btn-tertiary {
+  background-color: var(--container-contrast);
+  color: var(--font);
+}
+
+/* Containers and Boxed */
+
 .card {
   background-color: var(--container);
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  border-radius: 15px;
+}
+
+.image-container{
+  width: 30%;
+  height: 100%;
+  position: relative;
+  border-radius: 15px;
 }
 
 /* Borders and outline */
@@ -174,5 +170,25 @@ a {
   background-color: var(--error);
   color: var(--on-error);
   padding: 1rem;
-  border-radius: 6px;
+  border-radius: 15px;
+}
+
+/* Headlines and Texts */
+.main-headline {
+  color: var(--font);
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+.sub-headline {
+  color: var(--font);
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.paragraph-text {
+  color: var(--font-variant);
+  font-size: 1rem;
+  font-weight: 400;
 }

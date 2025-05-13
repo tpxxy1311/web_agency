@@ -10,7 +10,7 @@ const HelpNavigation = () => {
     const pathname = usePathname();
     return ( 
         <nav className={styles.navContainer}>
-            <Link href="/help" className={`${styles.linkContainer} ${pathname === '/help' ? styles.active : ''}`}>
+            <Link href="/about" className={`${styles.linkContainer} ${pathname === '/about' ? styles.active : ''}`}>
                 <div className={styles.iconContainer}><HelpOutlineRounded  sx={{ fontSize: 18 }} className={styles.icon}/></div> <p>Help</p>
             </Link>
             <Link href="mailto:info@ai-fara.com" className={`${styles.linkContainer} ${pathname === '/feedback' ? styles.active : ''}`}>

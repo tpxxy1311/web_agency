@@ -1,31 +1,62 @@
 {
-    "endpoints": {
-      "/login": {
-        "method": "POST",
-        "description": "Authenticates a user and returns either a success message with a token or a failure message.",
-        "request_body": {
-          "email": "string",
-          "password": "string"
-        },
-        "responses": {
-          "success": {
-            "status_code": 200,
-            "body": {
-              "message": "successful",
-              "token": "string",
-              "expiresIn": 3600
-            },
-            "description": "Login was successful. A token is returned for authentication."
+  "endpoints": {
+    "/login": {
+      "method": "POST",
+      "description": "Authenticates a user and returns either a success message with a token or a failure message.",
+      "request_body": {
+        "email": "string",
+        "password": "string"
+      },
+      "responses": {
+        "success": {
+          "status_code": 200,
+          "body": {
+            "message": "successful",
+            "token": "string",
+            "expiresIn": 3600
           },
-          "failure": {
-            "status_code": 401,
-            "body": {
-              "message": "failed"
-            },
-            "description": "Login failed due to incorrect credentials."
-          }
+          "description": "Login was successful. A token is returned for authentication."
+        },
+        "failure": {
+          "status_code": 401,
+          "body": {
+            "message": "failed"
+          },
+          "description": "Login failed due to incorrect credentials."
+        }
+      }
+    },
+
+    "/report": {
+      "method": "GET",
+      "description": "Retrieves a specific PDF trend report by ID and returns it as a downloadable file.",
+      "query_parameters": {
+        "id": "string (required) — the unique identifier of the report to download"
+      },
+      "headers": {
+        "Authorization": "Bearer <token> — required to authorize the download request"
+      },
+      "responses": {
+        "success": {
+          "status_code": 200,
+          "body": "<PDF file>",
+          "description": "The requested report file is returned successfully as a downloadable PDF."
+        },
+        "not_found": {
+          "status_code": 404,
+          "body": {
+            "message": "report not found"
+          },
+          "description": "No report was found with the given ID."
+        },
+        "unauthorized": {
+          "status_code": 401,
+          "body": {
+            "message": "unauthorized"
+          },
+          "description": "Access denied due to missing or invalid authentication token."
         }
       }
     }
   }
-  
+}

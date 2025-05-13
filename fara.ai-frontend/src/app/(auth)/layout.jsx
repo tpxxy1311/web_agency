@@ -1,5 +1,6 @@
 "use client";
 import { Outfit } from "next/font/google";
+import styles from "@/styles/global/layout.module.scss"
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -11,8 +12,10 @@ export default function RootLayout({ children }) {
 
   
   return (
-      <body className="__className_a4c6f6">
-        {children}
+      <body className={outfit.className}>
+        <main className={styles.authContent}>
+          {children}
+        </main>
       </body>
   );
 }

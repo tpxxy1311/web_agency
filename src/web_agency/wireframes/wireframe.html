@@ -7,39 +7,65 @@
     <style>
         body {
             display: flex;
-            margin: 0;
-            height: 720px;
+            flex-direction: row;
+            flex-wrap: wrap;
             width: 1024px;
+            height: 720px;
+            margin: 0 auto;
+            font-family: Arial, sans-serif;
         }
-        .image-container {
+
+        .image {
             flex: 0 0 512px;
-            height: 100%;
-            border-right: 1px solid #ccc;
+            height: 540px;
+            border: 1px solid black;
+            box-sizing: border-box;
+            margin: 5px;
         }
-        .form-container {
-            flex: 0 0 512px;
+
+        .content {
+            flex: 1;
             display: flex;
             flex-direction: column;
-            justify-content: flex-start;
-            align-items: center;
-            height: 100%;
+            justify-content: center;
+            padding: 0 20px;
         }
-        .input-field, .button, .other-field {
-            width: 440px;
-            margin: 10px 0;
+
+        .header,
+        .text,
+        .input,
+        .button {
+            width: 400px;
+            height: 40px;
+            margin: 5px 0;
+            border: 1px solid black;
+            box-sizing: border-box;
+        }
+
+        .input {
+            background-color: #f0f0f0;
+        }
+        
+        .button {
             text-align: center;
+            line-height: 40px;
+            cursor: pointer;
+            background-color: #ddd;
         }
     </style>
 </head>
 <body>
-    <div class="image-container">
-        <img src="#" alt="Image Placeholder" style="width:100%; height:100%;">
+
+    <div class="image">Image Placeholder</div>
+
+    <div class="content">
+        <header class="header">Header Placeholder</header>
+        <div class="text">Text Placeholder 1</div>
+        <input type="text" class="input" placeholder="Input Placeholder 1">
+        <input type="text" class="input" placeholder="Input Placeholder 2">
+        <div class="button">Button Placeholder</div>
+        <div class="text">Text Placeholder 2</div>
     </div>
-    <section class="form-container" role="form">
-        <input type="text" class="input-field" placeholder="Input Field 1">
-        <input type="text" class="input-field" placeholder="Input Field 2">
-        <div class="other-field">Other Content</div>
-        <button type="button" class="button">Submit</button>
-    </section>
+
 </body>
 </html>
